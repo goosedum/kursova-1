@@ -1,0 +1,165 @@
+@startuml classes-draft
+' Чернетка діаграми класів (крок 1.5). Фінальна версія — крок 3.2, після звірки з кодом.
+!pragma layout smetana
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+hide empty members
+
+package "Model" {
+  class Vacancy {
+    + id : UUID
+    + company : String
+    + title : String
+    + specialization : String
+    + experienceLevel : ExperienceLevel
+    + minSalary : Int
+    + maxSalary : Int
+    + workFormat : WorkFormat
+    + technologies : [String]
+    + averageSalary : Double
+    + salaryRange : Int
+    --
+    + init()
+    + init(company:title:specialization:experienceLevel:minSalary:maxSalary:workFormat:technologies:)
+    + init(copyOf: Vacancy)
+    + deinit
+    + hasTechnology(name: String) : Bool
+    + validate() throws
+  }
+  enum ExperienceLevel <<enumeration>> {
+    intern
+    junior
+    middle
+    senior
+    lead
+    + title : String
+    + order : Int
+  }
+  enum WorkFormat <<enumeration>> {
+    office
+    remote
+    hybrid
+    + title : String
+    + systemImage : String
+  }
+  enum VacancyError <<enumeration>> {
+    fileNotFound, fileReadFailed, fileWriteFailed
+    invalidFieldCount, invalidNumber, unknownValue
+    emptyField, fieldTooLong, forbiddenCharacter
+    salaryOutOfRange, minSalaryGreaterThanMax
+    noTechnologies, emptyCatalog
+    + errorDescription : String
+    + recoverySuggestion : String
+  }
+  interface Error <<protocol>>
+  class VacancyGroup <<struct>> {
+    + title : String
+    + vacancies : [Vacancy]
+  }
+  class SalaryRangeExtremes <<struct>> {
+    + minRange : Int
+    + minRangeVacancies : [Vacancy]
+    + maxRange : Int
+    + maxRangeVacancies : [Vacancy]
+  }
+}
+
+package "Storage" {
+  class VacancyFileReader {
+    - lines : [String]
+    - index : Int
+    + currentLineNumber : Int
+    --
+    + init(url: URL) throws
+    + {static} >> (reader, vacancy) throws : Bool
+  }
+  class VacancyFileWriter {
+    - url : URL
+    - text : String
+    --
+    + init(url: URL)
+    + {static} << (writer, vacancy) : VacancyFileWriter
+    + save() throws
+  }
+}
+
+package "Logic" {
+  class VacancyCatalog {
+    + vacancies : [Vacancy] {readOnly}
+    --
+    + add(vacancy) throws
+    + replace(old, new) throws
+    + remove(vacancies)
+    + removeAll()
+    + load(from: URL) throws
+    + save(to: URL) throws
+    + allTechnologies : [String]
+    + allSpecializations : [String]
+  }
+  class "MergeSorter<Element>" as MergeSorter {
+    + sort(items, by) : [Element]
+    - merge(left, right, by) : [Element]
+  }
+  abstract class CatalogOperation {
+    + title : String
+    + systemImage : String
+    + helpText : String
+    + execute(on: VacancyCatalog) throws : OperationResult
+  }
+  class SearchByTitleAndCompanyOperation {
+    + title, company : String
+  }
+  class SearchByTechnologyOperation {
+    + technology : String
+  }
+  class FilterByLevelAndFormatOperation {
+    + level : ExperienceLevel
+    + format : WorkFormat
+  }
+  class SortByAverageSalaryOperation {
+    + ascending : Bool
+  }
+  class SalaryRangeExtremesOperation
+  class GroupBySpecializationOperation
+  class OperationResult <<struct>> {
+    + title : String
+    + summary : String
+    + groups : [VacancyGroup]
+  }
+}
+
+package "ViewModel" {
+  class CatalogViewModel {
+    + catalog : VacancyCatalog
+    + operations : [CatalogOperation]
+    + selectedVacancyIDs : Set<UUID>
+    + result : OperationResult?
+    + hasUnsavedChanges : Bool
+    + errorAlert : VacancyError?
+  }
+}
+
+VacancyCatalog *-- "0..*" Vacancy
+Vacancy --> ExperienceLevel
+Vacancy --> WorkFormat
+VacancyError ..|> Error
+VacancyCatalog ..> VacancyFileReader : load
+VacancyCatalog ..> VacancyFileWriter : save
+VacancyFileReader ..> Vacancy : >>
+VacancyFileWriter ..> Vacancy : <<
+CatalogOperation <|-- SearchByTitleAndCompanyOperation
+CatalogOperation <|-- SearchByTechnologyOperation
+CatalogOperation <|-- FilterByLevelAndFormatOperation
+CatalogOperation <|-- SortByAverageSalaryOperation
+CatalogOperation <|-- SalaryRangeExtremesOperation
+CatalogOperation <|-- GroupBySpecializationOperation
+CatalogOperation ..> VacancyCatalog
+CatalogOperation ..> OperationResult
+SortByAverageSalaryOperation ..> MergeSorter
+GroupBySpecializationOperation ..> MergeSorter
+SalaryRangeExtremesOperation ..> SalaryRangeExtremes
+OperationResult o-- "1..*" VacancyGroup
+CatalogViewModel o-- VacancyCatalog
+CatalogViewModel o-- "6" CatalogOperation
+@enduml
