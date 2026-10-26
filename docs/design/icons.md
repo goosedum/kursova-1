@@ -32,5 +32,6 @@
 | Успіх | `checkmark.circle.fill` | U+100063 |
 | Очистити поле | `xmark.circle.fill` | U+100061 |
 | Показати/сховати сайдбар | `sidebar.left` | U+100C31 |
+| Показати/сховати панель деталей | `sidebar.right` | U+1003DB |
 | Список вибору | `chevron.up.chevron.down` | U+10018F |
 | Розкрити | `chevron.down` | U+100188 |
