@@ -1,0 +1,7 @@
+# Демонстрація винятку: у рядку 6 мінімальна зарплата не є числом ("abc")
+# компанія;посада;спеціалізація;рівень;мін;макс;формат;технології
+ByteForge;Junior iOS Developer;Mobile;Junior;800;1200;Office;Swift,UIKit,Git
+CodeNest;Middle Backend Developer;Backend;Middle;2000;3000;Remote;Java,Spring,PostgreSQL,Docker
+PixelSoft;Middle Frontend Developer;Frontend;Middle;1800;2800;Remote;JavaScript,Vue,Git
+DataWave;Junior Data Analyst;Data Science;Junior;abc;1000;Office;Python,SQL,Excel
+CloudPeak;DevOps Engineer;DevOps;Middle;2500;3500;Remote;Docker,Kubernetes,AWS,Linux

@@ -1,0 +1,30 @@
+# Каталог вакансій для ІТ-спеціалістів — демонстраційні дані (назви компаній вигадані)
+# компанія;посада;спеціалізація;рівень;мін;макс;формат;технології
+ByteForge;Junior iOS Developer;Mobile;Junior;800;1200;Office;Swift,UIKit,Git
+ByteForge;Senior iOS Developer;Mobile;Senior;4000;6500;Remote;Swift,SwiftUI,Combine,Git
+CodeNest;Middle Backend Developer;Backend;Middle;2000;3000;Remote;Java,Spring,PostgreSQL,Docker
+CodeNest;Lead Backend Developer;Backend;Lead;5000;8000;Hybrid;Python,Django,PostgreSQL,Docker,AWS
+PixelSoft;Middle Frontend Developer;Frontend;Middle;1800;2800;Remote;JavaScript,Vue,Git
+PixelSoft;Senior Frontend Developer;Frontend;Senior;3500;5000;Hybrid;TypeScript,React,Git
+DataWave;Junior Data Analyst;Data Science;Junior;700;1000;Office;Python,SQL,Excel
+CloudPeak;DevOps Engineer;DevOps;Middle;2500;3500;Remote;Docker,Kubernetes,AWS,Linux
+AppStudio;Middle Android Developer;Mobile;Middle;2200;3200;Hybrid;Kotlin,Android SDK,Git
+NetLine;QA Engineer;QA;Junior;600;900;Office;Selenium,Java,Postman
+AppStudio;iOS Developer (SwiftUI);Mobile;Middle;2500;3500;Remote;SwiftUI,Git
+DataWave;Intern Python Developer;Data Science;Intern;400;700;Office;Python,Git
+BrightBit;UI/UX Designer;Design;Middle;1500;2300;Hybrid;Figma,Prototyping,User Research
+BrightBit;Senior Product Designer;Design;Senior;3000;4200;Remote;Figma,Design Systems,Prototyping
+GreenStack;Project Manager;Management;Middle;2000;2800;Office;Jira,Scrum,Confluence
+GreenStack;Delivery Manager;Management;Lead;4500;7500;Hybrid;Jira,Scrum,Kanban
+NetLine;Senior QA Automation Engineer;QA;Senior;3000;4200;Remote;Python,Pytest,Docker,Selenium
+CloudPeak;Junior DevOps Engineer;DevOps;Junior;1000;1500;Office;Linux,Bash,Docker,Git
+NovaLabs;Machine Learning Engineer;Data Science;Senior;4000;6000;Remote;Python,PyTorch,SQL,Docker
+NovaLabs;Data Engineer;Data Science;Middle;2500;3700;Hybrid;Python,Spark,SQL,AWS
+CodeNest;Junior Java Developer;Backend;Junior;900;1400;Office;Java,Spring,Git
+PixelSoft;Intern Frontend Developer;Frontend;Intern;300;700;Office;HTML,CSS,JavaScript
+AppStudio;Flutter Developer;Mobile;Middle;2000;3000;Remote;Dart,Flutter,Firebase,Git
+ByteForge;Lead iOS Engineer;Mobile;Lead;5500;7000;Hybrid;Swift,SwiftUI,Combine,CI/CD
+BrightBit;Junior Graphic Designer;Design;Junior;600;1000;Office;Figma,Illustrator,Photoshop
+GreenStack;Scrum Master;Management;Senior;2800;4000;Remote;Scrum,Jira,Coaching
+CloudPeak;Senior Site Reliability Engineer;DevOps;Senior;4500;6500;Remote;Kubernetes,Terraform,AWS,Go
+NetLine;Lead QA Engineer;QA;Lead;3500;5000;Hybrid;Test Management,Jira,Selenium

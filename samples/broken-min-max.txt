@@ -1,0 +1,5 @@
+# Демонстрація винятку: у рядку 4 мінімальна зарплата (5000) більша за максимальну (3000)
+# компанія;посада;спеціалізація;рівень;мін;макс;формат;технології
+ByteForge;Junior iOS Developer;Mobile;Junior;800;1200;Office;Swift,UIKit,Git
+CodeNest;Middle Backend Developer;Backend;Middle;5000;3000;Remote;Java,Spring,PostgreSQL,Docker
+PixelSoft;Middle Frontend Developer;Frontend;Middle;1800;2800;Remote;JavaScript,Vue,Git
