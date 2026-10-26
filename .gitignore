@@ -22,3 +22,7 @@ buildServer.json
 
 # Тимчасові файли Word
 ~$*.docx
+
+# Робочі плани для Claude — лише локально (рішення D-05)
+CLAUDE.md
+.claude/
