@@ -1,0 +1,30 @@
+@startuml
+' Діаграма діяльності — злиття merge(_:_:by:) класу MergeSorter<Element> (крок 3.4; розділ 1.8 звіту; D-11, D-26).
+!include style.iuml
+title merge(_ left: [Element], _ right: [Element], by isOrderedBefore)
+
+start
+:result = [ ]
+i = 0, j = 0;
+while (i < left.count і j < right.count?) is (так)
+  if (isOrderedBefore(right[j], left[i])?) then (так)
+    :result.append(right[j])
+    j += 1;
+  else (ні: менший або рівний — з лівої)
+    :result.append(left[i])
+    i += 1;
+  endif
+endwhile (ні)
+:дописати залишок left[i...];
+:дописати залишок right[j...];
+:повернути result;
+stop
+
+floating note right
+  Для ф.4 (D-11):
+  ↓ isOrderedBefore = { $0.averageSalary > $1.averageSalary }
+  ↑ isOrderedBefore = { $0.averageSalary < $1.averageSalary }
+  При рівності першим іде елемент
+  лівої половини — сортування стабільне.
+end note
+@enduml

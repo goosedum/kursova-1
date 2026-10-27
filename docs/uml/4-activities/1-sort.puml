@@ -1,0 +1,21 @@
+@startuml
+' Діаграма діяльності — рекурсивне sort(_:by:) класу MergeSorter<Element> (крок 3.4; розділ 1.8 звіту; D-26).
+' Злиття — 2-merge.puml. Час O(n log n), додаткова пам'ять O(n).
+!include style.iuml
+title sort(_ items: [Element], by isOrderedBefore)
+
+start
+if (items.count ≤ 1?) then (так)
+  :повернути items
+  (уже відсортовано);
+  stop
+else (ні)
+endif
+:middle = items.count / 2;
+:left = sort(items[0..<middle], by:)
+(рекурсивний виклик);
+:right = sort(items[middle...], by:)
+(рекурсивний виклик);
+:повернути merge(left, right, by:);
+stop
+@enduml

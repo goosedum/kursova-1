@@ -32,8 +32,17 @@
 
 `style.iuml` — спільний стиль діаграм послідовності.
 
+## 4. Діяльність — `4-activities/`
+
+| Файл | Що показує |
+|---|---|
+| `1-sort` | Рекурсивне сортування злиттям `sort(_:by:)`: ≤ 1 елемента — повернути, інакше поділити навпіл, відсортувати половини, злити |
+| `2-merge` | Злиття двох відсортованих половин `merge(_:_:by:)`; при рівності першим іде елемент лівої половини (стабільність) |
+
+`style.iuml` — спільний стиль діаграм діяльності.
+
 ## Як перемалювати картинки
 
 ```bash
-cd ~/kursova-1/docs/uml && plantuml -tpng 1-use-cases/*.puml 2-classes/*.puml 3-sequences/*.puml
+cd ~/kursova-1/docs/uml && plantuml -tpng 1-use-cases/*.puml 2-classes/*.puml 3-sequences/*.puml 4-activities/*.puml
 ```
