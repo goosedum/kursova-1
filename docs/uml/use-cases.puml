@@ -1,0 +1,65 @@
+@startuml use-cases
+' Діаграма прецедентів — загальна (крок 3.1). Джерело — docs/analysis/04-use-cases.md, розділ 2.
+' Зв'язки «include»/«extend» — на детальних діаграмах use-cases-files, use-cases-vacancies, use-cases-analysis.
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam dpi 200
+skinparam packageStyle rectangle
+skinparam nodesep 6
+skinparam ranksep 120
+skinparam usecase {
+  BackgroundColor white
+}
+left to right direction
+
+actor "Користувач" as User
+
+rectangle "Каталог вакансій" {
+  package "Файли" {
+    usecase "UC-01 Створити новий (порожній) каталог" as UC01
+    usecase "UC-02 Відкрити каталог з файлу" as UC02
+    usecase "UC-03 Зберегти каталог" as UC03
+    usecase "UC-04 Зберегти каталог як…" as UC04
+  }
+  package "Вакансії" {
+    usecase "UC-05 Переглянути всі вакансії" as UC05
+    usecase "UC-06 Переглянути деталі вакансії" as UC06
+    usecase "UC-07 Додати вакансію" as UC07
+    usecase "UC-08 Редагувати вакансію" as UC08
+    usecase "UC-09 Дублювати вакансію" as UC09
+    usecase "UC-10 Видалити вакансію (одну або кілька)" as UC10
+  }
+  package "Аналіз — функції 1–6" {
+    usecase "UC-11 Ф.1 Знайти за посадою і компанією" as UC11
+    usecase "UC-12 Ф.2 Знайти за технологією" as UC12
+    usecase "UC-13 Ф.3 Відібрати за рівнем і форматом" as UC13
+    usecase "UC-14 Ф.4 Відсортувати за середньою зарплатою" as UC14
+    usecase "UC-15 Ф.5 Знайти мін. і макс. діапазон зарплати" as UC15
+    usecase "UC-16 Ф.6 Згрупувати за спеціалізацією" as UC16
+  }
+  package "Довідка" {
+    usecase "UC-17 Переглянути довідку" as UC17
+  }
+}
+
+User -- UC01
+User -- UC02
+User -- UC03
+User -- UC04
+User -- UC05
+User -- UC06
+User -- UC07
+User -- UC08
+User -- UC09
+User -- UC10
+User -- UC11
+User -- UC12
+User -- UC13
+User -- UC14
+User -- UC15
+User -- UC16
+User -- UC17
+@enduml

@@ -1,0 +1,41 @@
+@startuml use-cases-vacancies
+' Діаграма прецедентів — робота з вакансіями (крок 3.1). Джерело — docs/analysis/04-use-cases.md, розділи 3–4.
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam dpi 200
+skinparam usecase {
+  BackgroundColor white
+}
+left to right direction
+
+actor "Користувач" as User
+
+rectangle "Каталог вакансій: вакансії" {
+  usecase "UC-05\nПереглянути всі вакансії" as UC05
+  usecase "UC-06\nПереглянути деталі вакансії" as UC06
+  usecase "UC-07\nДодати вакансію" as UC07
+  usecase "UC-08\nРедагувати вакансію" as UC08
+  usecase "UC-09\nДублювати вакансію" as UC09
+  usecase "UC-10\nВидалити вакансію\n(одну або кілька)" as UC10
+  usecase "UC-18\nПеревірити дані вакансії" as UC18
+  usecase "UC-20\nСтворити копію вакансії\n(конструктор копій)" as UC20
+  usecase "UC-21\nПоказати повідомлення\nпро помилку" as UC21
+}
+
+User -- UC05
+User -- UC06
+User -- UC07
+User -- UC08
+User -- UC09
+User -- UC10
+
+UC07 ..> UC18 : <<include>>
+UC08 ..> UC18 : <<include>>
+UC08 ..> UC20 : <<include>>
+UC09 ..> UC20 : <<include>>
+UC07 <.. UC21 : <<extend>>\nдані з помилкою
+UC08 <.. UC21 : <<extend>>
+@enduml

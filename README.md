@@ -8,4 +8,9 @@
 
 Мова — Swift, віконний застосунок для macOS (SwiftUI).
 
+## Дизайн
+
+- Макет у Figma: <https://www.figma.com/design/YDr0praKAGRczdbVic7XzA>
+- Клікабельний прототип: <https://www.figma.com/proto/YDr0praKAGRczdbVic7XzA?node-id=83-2&starting-point-node-id=83%3A2>
+
 > Статус: у розробці.
