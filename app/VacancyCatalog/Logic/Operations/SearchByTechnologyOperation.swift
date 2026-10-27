@@ -4,11 +4,13 @@
 //
 
 import Foundation
+import Observation
 
 /// Функція 2 — пошук за технологією (рішення D-10).
 ///
 /// Вакансія підходить, якщо в її переліку є технологія, що **дорівнює** введеній (без урахування регістру):
 /// «Swift» не знаходить «SwiftUI», «Java» не знаходить «JavaScript».
+@Observable
 class SearchByTechnologyOperation: CatalogOperation {
 
     /// Назва технології, яку шукаємо.

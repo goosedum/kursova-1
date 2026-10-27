@@ -25,25 +25,32 @@ struct MainWindowView: View {
         NavigationSplitView {
             SidebarView(viewModel: viewModel)
         } detail: {
-            content
-                .safeAreaInset(edge: .bottom, spacing: 0) {
-                    StatusBarView(viewModel: viewModel)
+            VStack(spacing: 0) {
+                // Панель вибраної функції над таблицею (крок 4.11)
+                if let operation = viewModel.selectedOperation {
+                    OperationPanelView(viewModel: viewModel, operation: operation)
+                    Divider()
                 }
-                .inspector(isPresented: $isInspectorPresented) {
-                    VacancyInspectorView(viewModel: viewModel)
-                        .inspectorColumnWidth(300)
-                }
-                .toolbar {
-                    vacancyButtons
-                    ToolbarItem(placement: .primaryAction) {
-                        Button {
-                            isInspectorPresented.toggle()
-                        } label: {
-                            Label("Деталі", systemImage: "sidebar.right")
-                        }
-                        .help("Показати або сховати панель деталей")
+                content
+            }
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                StatusBarView(viewModel: viewModel)
+            }
+            .inspector(isPresented: $isInspectorPresented) {
+                VacancyInspectorView(viewModel: viewModel)
+                    .inspectorColumnWidth(300)
+            }
+            .toolbar {
+                vacancyButtons
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        isInspectorPresented.toggle()
+                    } label: {
+                        Label("Деталі", systemImage: "sidebar.right")
                     }
+                    .help("Показати або сховати панель деталей")
                 }
+            }
         }
         .navigationTitle("Каталог вакансій")
         .navigationSubtitle(viewModel.windowSubtitle)

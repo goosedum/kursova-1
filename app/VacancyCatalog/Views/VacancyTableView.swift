@@ -48,7 +48,7 @@ struct VacancyTableView: View {
             }
             .width(min: 100, ideal: 115)
 
-            TableColumn("Середня") { vacancy in
+            TableColumn(viewModel.averageColumnTitle) { vacancy in
                 Text(TextFormat.money(vacancy.averageSalary))
                     .monospacedDigit()
                     .foregroundStyle(.secondary)

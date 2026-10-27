@@ -4,10 +4,12 @@
 //
 
 import Foundation
+import Observation
 
 /// Функція 3 — вакансії заданого рівня досвіду **та** формату роботи (обидві умови одночасно).
 ///
 /// Рівень і формат вибираються зі списків, тому помилок введення тут не буває.
+@Observable
 class FilterByLevelAndFormatOperation: CatalogOperation {
 
     /// Потрібний рівень досвіду.

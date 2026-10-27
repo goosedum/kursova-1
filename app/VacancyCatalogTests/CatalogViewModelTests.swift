@@ -107,6 +107,25 @@ struct CatalogViewModelTests {
         #expect(viewModel.displayedGroups[0].vacancies.count == 28)
     }
 
+    @Test("Номер функції (сайдбар, заголовок панелі) і стрілка в колонці «Середня» для ф.4")
+    func numberAndAverageColumn() throws {
+        let viewModel = try makeViewModel()
+        #expect(viewModel.number(of: nil) == 0)
+        #expect(viewModel.number(of: viewModel.operations[0]) == 1)
+        #expect(viewModel.number(of: viewModel.operations[5]) == 6)
+        #expect(viewModel.number(of: SortByAverageSalaryOperation()) == 0)
+
+        #expect(viewModel.averageColumnTitle == "Середня")
+        let sort = try #require(viewModel.operations[3] as? SortByAverageSalaryOperation)
+        viewModel.run(sort)
+        #expect(viewModel.averageColumnTitle == "Середня ↓")
+        sort.ascending = true
+        viewModel.run(sort)
+        #expect(viewModel.averageColumnTitle == "Середня ↑")
+        viewModel.run(viewModel.operations[5])
+        #expect(viewModel.averageColumnTitle == "Середня")
+    }
+
     @Test("Виділення технології ф.2 і «Нічого не знайдено»")
     func highlightAndNothingFound() throws {
         let viewModel = try makeViewModel()

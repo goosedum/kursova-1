@@ -37,7 +37,7 @@ struct SidebarView: View {
     private var selectedNumber: Binding<Int?> {
         return Binding(
             get: {
-                return number(of: viewModel.selectedOperation)
+                return viewModel.number(of: viewModel.selectedOperation)
             },
             set: { newNumber in
                 guard let number = newNumber, number >= 1, number <= viewModel.operations.count else {
@@ -47,18 +47,5 @@ struct SidebarView: View {
                 viewModel.select(viewModel.operations[number - 1])
             }
         )
-    }
-
-    /// Номер функції в сайдбарі (1…6) або 0 для «Усі вакансії».
-    private func number(of operation: CatalogOperation?) -> Int {
-        guard let selected = operation else {
-            return 0
-        }
-        for index in 0..<viewModel.operations.count {
-            if viewModel.operations[index] === selected {
-                return index + 1
-            }
-        }
-        return 0
     }
 }

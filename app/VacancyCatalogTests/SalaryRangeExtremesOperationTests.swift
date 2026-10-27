@@ -41,12 +41,22 @@ struct SalaryRangeExtremesOperationTests {
         #expect(result.summary == "Мін. діапазон $300 — 3 вакансії · макс. $3 000 — 2 вакансії")
     }
 
-    @Test("T-CAT-12: у всіх однаковий діапазон — обидві групи містять усі вакансії")
+    @Test("T-CAT-12: у всіх однаковий діапазон — одна група з усіма вакансіями (D-36)")
     func allRangesEqual() throws {
         let catalog = try makeCatalog([(1000, 2000), (3000, 4000), (500, 1500)])
-        let result = try SalaryRangeExtremesOperation().execute(on: catalog)
+        let operation = SalaryRangeExtremesOperation()
+
+        // Найменший і найбільший — ті самі 3 вакансії
+        let extremes = try operation.findExtremes(in: catalog)
+        #expect(extremes.minRangeVacancies.count == 3)
+        #expect(extremes.maxRangeVacancies.count == 3)
+
+        // Показуємо одну групу, щоб вакансії не повторювались у таблиці
+        let result = try operation.execute(on: catalog)
+        #expect(result.groups.count == 1)
+        #expect(result.groups[0].title == "Однаковий діапазон")
+        #expect(result.groups[0].subtitle == "макс − мін = $1 000")
         #expect(result.groups[0].vacancies.count == 3)
-        #expect(result.groups[1].vacancies.count == 3)
         #expect(result.summary == "У всіх вакансій однаковий діапазон $1 000")
     }
 
@@ -56,6 +66,7 @@ struct SalaryRangeExtremesOperationTests {
         let extremes = try SalaryRangeExtremesOperation().findExtremes(in: catalog)
         #expect(extremes.minRangeVacancies[0] === catalog.vacancies[0])
         #expect(extremes.maxRangeVacancies[0] === catalog.vacancies[0])
+        #expect(try SalaryRangeExtremesOperation().execute(on: catalog).groups.count == 1)
     }
 
     @Test("Нульовий діапазон (мін = макс) теж враховується")

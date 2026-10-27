@@ -167,6 +167,33 @@ class CatalogViewModel {
         return ""
     }
 
+    /// Заголовок колонки «Середня»: зі стрілкою напряму, коли показано результат ф.4 (S-06).
+    var averageColumnTitle: String {
+        if result == nil {
+            return "Середня"
+        }
+        if let sort = selectedOperation as? SortByAverageSalaryOperation {
+            if sort.ascending {
+                return "Середня ↑"
+            }
+            return "Середня ↓"
+        }
+        return "Середня"
+    }
+
+    /// Номер функції, як у сайдбарі і меню: 1…6; 0 — «Усі вакансії» (`nil`).
+    func number(of operation: CatalogOperation?) -> Int {
+        guard let selected = operation else {
+            return 0
+        }
+        for index in 0..<operations.count {
+            if operations[index] === selected {
+                return index + 1
+            }
+        }
+        return 0
+    }
+
     /// Порожній каталог — замість таблиці порожній стан з порадами (S-01).
     var isCatalogEmpty: Bool {
         return catalog.vacancies.isEmpty

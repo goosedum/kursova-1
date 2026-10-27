@@ -4,11 +4,13 @@
 //
 
 import Foundation
+import Observation
 
 /// Функція 1 — пошук за назвою посади **та** компанією (рішення D-09).
 ///
 /// Вакансія підходить, якщо її посада містить `titleQuery` **і** компанія містить `companyQuery`
 /// (регістр не важливий, пробіли по краях відкидаються). Порожнє поле — будь-яке значення.
+@Observable
 class SearchByTitleAndCompanyOperation: CatalogOperation {
 
     /// Текст, який має містити назва посади.

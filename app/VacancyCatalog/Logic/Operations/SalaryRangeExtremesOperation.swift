@@ -4,10 +4,13 @@
 //
 
 import Foundation
+import Observation
 
 /// Функція 5 — вакансії з найменшим і найбільшим діапазоном зарплати (діапазон = макс − мін).
 ///
-/// Якщо однаковий крайній діапазон мають кілька вакансій, показуються **всі** вони. Результат — дві групи.
+/// Якщо однаковий крайній діапазон мають кілька вакансій, показуються **всі** вони. Результат — дві групи;
+/// якщо в усіх вакансій діапазон однаковий (або вакансія одна) — одна група «Однаковий діапазон» (D-36).
+@Observable
 class SalaryRangeExtremesOperation: CatalogOperation {
 
     init() {
@@ -55,6 +58,17 @@ class SalaryRangeExtremesOperation: CatalogOperation {
     override func execute(on catalog: VacancyCatalog) throws -> OperationResult {
         let extremes = try findExtremes(in: catalog)
 
+        if extremes.minRange == extremes.maxRange {
+            // У всіх вакансій однаковий діапазон: найменший і найбільший збігаються, тому одна група
+            // замість двох однакових — інакше ті самі вакансії повторилися б у таблиці (D-36)
+            let sameGroup = VacancyGroup(title: "Однаковий діапазон",
+                                         subtitle: "макс − мін = " + TextFormat.money(extremes.minRange),
+                                         vacancies: extremes.minRangeVacancies)
+            return OperationResult(title: "Найменший і найбільший діапазон",
+                                   summary: "У всіх вакансій однаковий діапазон " + TextFormat.money(extremes.minRange),
+                                   groups: [sameGroup])
+        }
+
         let minGroup = VacancyGroup(title: "Найменший діапазон",
                                     subtitle: "макс − мін = " + TextFormat.money(extremes.minRange),
                                     vacancies: extremes.minRangeVacancies)
@@ -62,16 +76,10 @@ class SalaryRangeExtremesOperation: CatalogOperation {
                                     subtitle: "макс − мін = " + TextFormat.money(extremes.maxRange),
                                     vacancies: extremes.maxRangeVacancies)
 
-        var summary = ""
-        if extremes.minRange == extremes.maxRange {
-            // У всіх вакансій однаковий діапазон — обидві групи містять усі вакансії
-            summary = "У всіх вакансій однаковий діапазон " + TextFormat.money(extremes.minRange)
-        } else {
-            summary = "Мін. діапазон " + TextFormat.money(extremes.minRange) + " — "
-                + TextFormat.vacancies(extremes.minRangeVacancies.count)
-                + " · макс. " + TextFormat.money(extremes.maxRange) + " — "
-                + TextFormat.vacancies(extremes.maxRangeVacancies.count)
-        }
+        let summary = "Мін. діапазон " + TextFormat.money(extremes.minRange) + " — "
+            + TextFormat.vacancies(extremes.minRangeVacancies.count)
+            + " · макс. " + TextFormat.money(extremes.maxRange) + " — "
+            + TextFormat.vacancies(extremes.maxRangeVacancies.count)
         return OperationResult(title: "Найменший і найбільший діапазон", summary: summary, groups: [minGroup, maxGroup])
     }
 }
