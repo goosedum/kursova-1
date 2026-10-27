@@ -33,7 +33,9 @@ class SearchByTitleAndCompanyOperation: CatalogOperation {
         return title.isEmpty == false || company.isEmpty == false
     }
 
+    /// - Throws: `VacancyError.emptyCatalog`, якщо каталог порожній (D-38).
     override func execute(on catalog: VacancyCatalog) throws -> OperationResult {
+        try checkNotEmpty(catalog)
         let title = titleQuery.trimmingCharacters(in: .whitespaces)
         let company = companyQuery.trimmingCharacters(in: .whitespaces)
 

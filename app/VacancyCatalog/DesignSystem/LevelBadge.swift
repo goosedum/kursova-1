@@ -24,6 +24,9 @@ struct LevelBadge: View {
         .padding(.horizontal, AppSpacing.m)
         .padding(.vertical, AppSpacing.xs)
         .background(AppColor.level(level).opacity(AppColor.badgeTintOpacity), in: Capsule())
+        // VoiceOver читає бейдж одним реченням: «Рівень Junior»
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Рівень \(level.title)")
     }
 }
 

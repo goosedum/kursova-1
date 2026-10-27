@@ -22,6 +22,7 @@ struct OperationPanelView: View {
             HStack(alignment: .firstTextBaseline) {
                 Label("\(viewModel.number(of: operation)) · \(operation.title)", systemImage: operation.systemImage)
                     .font(.title3.weight(.semibold))
+                    .accessibilityAddTraits(.isHeader)
                 Spacer()
                 Text(viewModel.result?.summary ?? "")
                     .font(.caption)

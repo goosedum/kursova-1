@@ -30,11 +30,16 @@ struct MainWindowView: View {
                     OperationPanelView(viewModel: viewModel, operation: operation)
                     Divider()
                 }
+                // Вміст займає все місце під панеллю: порожній стан — посередині цього місця, а панель
+                // лишається вгорі (інакше невисокий порожній стан тягнув би панель на середину вікна)
                 content
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             // VStack займає всю висоту вікна, навіть коли вміст невисокий (порожній стан) — інакше рядок стану
             // опинився б посередині вікна, під порожнім станом
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            // Менше не можна: 8 колонок таблиці (з найменшими ширинами) мають уміститися поруч із сайдбаром
+            .frame(minWidth: 800, minHeight: 520)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 StatusBarView(viewModel: viewModel)
             }

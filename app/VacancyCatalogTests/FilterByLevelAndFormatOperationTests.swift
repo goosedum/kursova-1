@@ -39,10 +39,10 @@ struct FilterByLevelAndFormatOperationTests {
         #expect(try filter(.intern, .hybrid, in: catalog).isEmpty)
     }
 
-    @Test("Порожній каталог — порожній результат без винятку")
-    func emptyCatalogGivesEmptyResult() throws {
-        let result = try FilterByLevelAndFormatOperation().execute(on: VacancyCatalog())
-        #expect(result.vacancyCount == 0)
-        #expect(result.summary == "Нічого не знайдено")
+    @Test("T-CAT-13: порожній каталог → emptyCatalog (D-38)")
+    func emptyCatalogThrows() {
+        #expect(throws: VacancyError.emptyCatalog) {
+            try FilterByLevelAndFormatOperation().execute(on: VacancyCatalog())
+        }
     }
 }

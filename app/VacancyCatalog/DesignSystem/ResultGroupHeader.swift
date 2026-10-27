@@ -29,6 +29,9 @@ struct ResultGroupHeader: View {
         }
         .padding(.top, AppSpacing.s)
         .padding(.bottom, AppSpacing.xs)
+        // Для VoiceOver — заголовок: між групами можна переходити, як між заголовками
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isHeader)
     }
 }
 

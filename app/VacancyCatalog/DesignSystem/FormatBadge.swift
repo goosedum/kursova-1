@@ -17,6 +17,8 @@ struct FormatBadge: View {
         HStack(spacing: AppSpacing.xs) {
             Image(systemName: format.systemImage)
                 .foregroundStyle(AppColor.format(format))
+                // Іконка лише прикраса: без цього VoiceOver прочитав би англійську назву символу («briefcase»)
+                .accessibilityHidden(true)
             Text(format.title)
                 .fontWeight(.semibold)
         }
@@ -24,6 +26,8 @@ struct FormatBadge: View {
         .padding(.horizontal, AppSpacing.m)
         .padding(.vertical, AppSpacing.xs)
         .background(AppColor.format(format).opacity(AppColor.badgeTintOpacity), in: Capsule())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Формат \(format.title)")
     }
 }
 

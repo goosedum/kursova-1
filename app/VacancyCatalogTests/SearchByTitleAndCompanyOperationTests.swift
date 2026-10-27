@@ -53,6 +53,15 @@ struct SearchByTitleAndCompanyOperationTests {
         #expect(result.summary == "Нічого не знайдено")
     }
 
+    @Test("T-CAT-13: порожній каталог → emptyCatalog (D-38)")
+    func emptyCatalogThrows() {
+        let operation = SearchByTitleAndCompanyOperation()
+        operation.titleQuery = "developer"
+        #expect(throws: VacancyError.emptyCatalog) {
+            try operation.execute(on: VacancyCatalog())
+        }
+    }
+
     @Test("Кнопка «Виконати» активна, лише коли заповнене хоча б одне поле")
     func canExecuteNeedsOneField() {
         let operation = SearchByTitleAndCompanyOperation()

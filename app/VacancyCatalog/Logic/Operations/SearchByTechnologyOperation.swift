@@ -29,7 +29,9 @@ class SearchByTechnologyOperation: CatalogOperation {
         return technology.trimmingCharacters(in: .whitespaces).isEmpty == false
     }
 
+    /// - Throws: `VacancyError.emptyCatalog`, якщо каталог порожній (D-38).
     override func execute(on catalog: VacancyCatalog) throws -> OperationResult {
+        try checkNotEmpty(catalog)
         let name = technology.trimmingCharacters(in: .whitespaces)
         var found: [Vacancy] = []
         for vacancy in catalog.vacancies {

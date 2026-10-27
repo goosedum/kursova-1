@@ -58,6 +58,21 @@ struct CatalogViewModelTests {
         #expect(viewModel.result == nil)
     }
 
+    @Test("Порожній каталог (D-38): ф.3 — алерт одразу при виборі; ф.1 — лише після «Виконати»")
+    func emptyCatalogAlertForAllFunctions() throws {
+        let viewModel = CatalogViewModel()
+        viewModel.select(viewModel.operations[2])
+        #expect(viewModel.errorAlert == VacancyError.emptyCatalog)
+
+        viewModel.errorAlert = nil
+        viewModel.select(viewModel.operations[0])
+        #expect(viewModel.errorAlert == nil)
+        let search = try #require(viewModel.operations[0] as? SearchByTitleAndCompanyOperation)
+        search.titleQuery = "developer"
+        viewModel.runSelectedOperation()
+        #expect(viewModel.errorAlert == VacancyError.emptyCatalog)
+    }
+
     // MARK: - Тексти вікна (Figma S-01…S-08)
 
     @Test("Рядок стану й підзаголовок: новий каталог, файл, демо-дані")

@@ -24,7 +24,9 @@ class FilterByLevelAndFormatOperation: CatalogOperation {
                    helpText: "Вакансії, у яких збігаються обидва значення.")
     }
 
+    /// - Throws: `VacancyError.emptyCatalog`, якщо каталог порожній (D-38).
     override func execute(on catalog: VacancyCatalog) throws -> OperationResult {
+        try checkNotEmpty(catalog)
         var found: [Vacancy] = []
         for vacancy in catalog.vacancies {
             if vacancy.experienceLevel == level && vacancy.workFormat == format {

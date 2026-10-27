@@ -47,7 +47,7 @@ class CatalogOperation {
     /// Виконує функцію над каталогом. Каталог не змінюється — результат містить посилання на його вакансії.
     ///
     /// Кожен підклас обов'язково перевизначає цей метод.
-    /// - Throws: `VacancyError.emptyCatalog`, якщо функції потрібні дані, а каталог порожній (ф.4–6).
+    /// - Throws: `VacancyError.emptyCatalog`, якщо каталог порожній (усі шість функцій, D-38).
     func execute(on catalog: VacancyCatalog) throws -> OperationResult {
         fatalError("execute(on:) треба перевизначити в підкласі \(type(of: self))")
     }

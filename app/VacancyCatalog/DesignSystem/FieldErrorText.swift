@@ -14,10 +14,14 @@ struct FieldErrorText: View {
     var body: some View {
         HStack(spacing: AppSpacing.xs) {
             Image(systemName: "exclamationmark.triangle.fill")
+                .accessibilityHidden(true)
             Text(message)
         }
         .font(.subheadline)
         .foregroundStyle(AppColor.danger)
+        // VoiceOver: «Помилка: Поле «Компанія» не може бути порожнім.»
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Помилка: " + message)
     }
 }
 

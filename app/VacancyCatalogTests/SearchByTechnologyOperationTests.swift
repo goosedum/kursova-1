@@ -49,6 +49,15 @@ struct SearchByTechnologyOperationTests {
         }
     }
 
+    @Test("T-CAT-13: порожній каталог → emptyCatalog (D-38)")
+    func emptyCatalogThrows() {
+        let operation = SearchByTechnologyOperation()
+        operation.technology = "Swift"
+        #expect(throws: VacancyError.emptyCatalog) {
+            try operation.execute(on: VacancyCatalog())
+        }
+    }
+
     @Test("Кнопка «Виконати» активна, лише коли поле заповнене")
     func canExecuteNeedsTechnology() {
         let operation = SearchByTechnologyOperation()
