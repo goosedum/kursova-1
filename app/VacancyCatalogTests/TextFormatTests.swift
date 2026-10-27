@@ -30,4 +30,10 @@ struct TextFormatTests {
     func money(amount: Int, expected: String) {
         #expect(TextFormat.money(amount) == expected)
     }
+
+    @Test("Середня зарплата: ціла — без десятих, з половиною — «,5»",
+          arguments: [(1000.0, "$1 000"), (1000.5, "$1 000,5"), (550.0, "$550"), (6250.0, "$6 250")])
+    func moneyWithTenths(amount: Double, expected: String) {
+        #expect(TextFormat.money(amount) == expected)
+    }
 }

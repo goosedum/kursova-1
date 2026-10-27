@@ -49,4 +49,16 @@ enum TextFormat {
         }
         return "$" + result
     }
+
+    /// Сума з десятими (середня зарплата буває з половиною): 1000 → «$1 000», 1000.5 → «$1 000,5».
+    static func money(_ amount: Double) -> String {
+        // Округлюємо до десятих і ділимо на цілу частину та десяті
+        let tenths = Int((amount * 10).rounded())
+        let whole = tenths / 10
+        let fraction = tenths % 10
+        if fraction == 0 {
+            return money(whole)
+        }
+        return money(whole) + ",\(fraction)"
+    }
 }
