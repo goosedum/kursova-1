@@ -30,6 +30,9 @@ package "ViewModel" {
     + /isNothingFound : Bool
     --
     + select(_ operation: CatalogOperation)
+    + runSelectedOperation()
+    + findVacancies(withTechnology: String)
+    + findVacancies(ofCompany: String)
     + showAll()
     + run(_ operation: CatalogOperation)
     + newVacancy()

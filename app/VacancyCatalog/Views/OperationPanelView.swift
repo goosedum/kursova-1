@@ -62,13 +62,13 @@ struct OperationPanelView: View {
         }
     }
 
-    /// «Виконати» (⌘⏎). Неактивна, поки параметри не заповнені (`canExecute`, ф.1 і ф.2).
+    /// «Виконати». Неактивна, поки параметри не заповнені (`canExecute`, ф.1 і ф.2).
+    /// Клавіші ⌘⏎ дає пункт меню «Аналіз → Виконати функцію» — тут їх не повторюємо.
     private var runButton: some View {
         Button("Виконати") {
             run()
         }
         .buttonStyle(.borderedProminent)
-        .keyboardShortcut(.return, modifiers: .command)
         .disabled(operation.canExecute == false)
         .help("Виконати функцію (⌘⏎)")
     }

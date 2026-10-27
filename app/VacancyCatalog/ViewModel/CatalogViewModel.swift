@@ -240,6 +240,39 @@ class CatalogViewModel {
         }
     }
 
+    /// Контекстне меню рядка: «Знайти за технологією ▸ Swift» — функція 2 з цією технологією (S-12).
+    func findVacancies(withTechnology technology: String) {
+        for operation in operations {
+            if let search = operation as? SearchByTechnologyOperation {
+                search.technology = technology
+                run(search)
+                return
+            }
+        }
+    }
+
+    /// Контекстне меню рядка: «Вакансії компанії «PixelSoft»» — функція 1 лише за компанією (S-12).
+    func findVacancies(ofCompany company: String) {
+        for operation in operations {
+            if let search = operation as? SearchByTitleAndCompanyOperation {
+                search.titleQuery = ""
+                search.companyQuery = company
+                run(search)
+                return
+            }
+        }
+    }
+
+    /// «Аналіз → Виконати функцію» (⌘⏎): виконує вибрану функцію, якщо її параметри заповнені.
+    func runSelectedOperation() {
+        guard let operation = selectedOperation else {
+            return
+        }
+        if operation.canExecute {
+            run(operation)
+        }
+    }
+
     // MARK: - Вакансії
 
     /// «Додати»: форма з порожньою вакансією (конструктор за замовчуванням).

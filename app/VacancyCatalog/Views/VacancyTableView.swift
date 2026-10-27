@@ -81,12 +81,80 @@ struct VacancyTableView: View {
                 }
             }
         }
-        // Подвійний клік по рядку — редагувати (UC-08). Пункти контекстного меню додає крок 4.12.
-        .contextMenu(forSelectionType: UUID.self) { _ in
+        // Права кнопка миші — контекстне меню (S-12); подвійний клік — редагувати (UC-08).
+        // clickedIDs — рядки, на яких клацнули: вибрані, або лише цей рядок, якщо він не вибраний (UC-10, A2)
+        .contextMenu(forSelectionType: UUID.self) { clickedIDs in
+            rowMenu(for: clickedIDs)
         } primaryAction: { clickedIDs in
             viewModel.selectedVacancyIDs = clickedIDs
             viewModel.editSelected()
         }
+    }
+
+    /// Пункти контекстного меню для рядків `clickedIDs`.
+    @ViewBuilder
+    private func rowMenu(for clickedIDs: Set<UUID>) -> some View {
+        let clicked = vacancies(with: clickedIDs)
+        Button {
+            viewModel.selectedVacancyIDs = clickedIDs
+            viewModel.editSelected()
+        } label: {
+            Label("Редагувати…", systemImage: "pencil")
+        }
+        .disabled(clicked.count != 1)
+        Button {
+            viewModel.selectedVacancyIDs = clickedIDs
+            viewModel.duplicateSelected()
+        } label: {
+            Label("Дублювати", systemImage: "square.on.square")
+        }
+        .disabled(clicked.count != 1)
+
+        if clicked.count == 1 {
+            Divider()
+            Menu {
+                ForEach(clicked[0].technologies, id: \.self) { technology in
+                    Button(technology) {
+                        viewModel.findVacancies(withTechnology: technology)
+                    }
+                }
+            } label: {
+                Label("Знайти за технологією", systemImage: "cpu")
+            }
+            Button {
+                viewModel.findVacancies(ofCompany: clicked[0].company)
+            } label: {
+                Label("Вакансії компанії «\(clicked[0].company)»", systemImage: "magnifyingglass")
+            }
+        }
+
+        Divider()
+        Button(role: .destructive) {
+            viewModel.selectedVacancyIDs = clickedIDs
+            viewModel.isDeleteConfirmationPresented = true
+        } label: {
+            Label(deleteTitle(count: clicked.count), systemImage: "trash")
+        }
+        .disabled(clicked.isEmpty)
+    }
+
+    /// «Видалити» для однієї вакансії, «Видалити 3 вакансії» для кількох.
+    private func deleteTitle(count: Int) -> String {
+        if count > 1 {
+            return "Видалити " + TextFormat.count(count, one: "вакансію", few: "вакансії", many: "вакансій")
+        }
+        return "Видалити"
+    }
+
+    /// Вакансії каталогу з указаними ID (у порядку каталогу).
+    private func vacancies(with ids: Set<UUID>) -> [Vacancy] {
+        var found: [Vacancy] = []
+        for vacancy in viewModel.catalog.vacancies {
+            if ids.contains(vacancy.id) {
+                found.append(vacancy)
+            }
+        }
+        return found
     }
 
     /// Чи виділити чип: технологія збігається із запитом ф.2 (без урахування регістру).

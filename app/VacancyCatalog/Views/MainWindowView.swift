@@ -33,6 +33,9 @@ struct MainWindowView: View {
                 }
                 content
             }
+            // VStack займає всю висоту вікна, навіть коли вміст невисокий (порожній стан) — інакше рядок стану
+            // опинився б посередині вікна, під порожнім станом
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 StatusBarView(viewModel: viewModel)
             }
@@ -99,8 +102,9 @@ struct MainWindowView: View {
         }
     }
 
-    /// Кнопки вакансій на панелі інструментів: додати, редагувати, дублювати, видалити (Figma: `Organism/Toolbar`).
-    /// Гарячі клавіші до них додає головне меню (крок 4.12).
+    /// Кнопки вакансій на панелі інструментів: додати, редагувати, дублювати, видалити, меню «Аналіз»
+    /// (Figma: `Organism/Toolbar`). Гарячі клавіші до цих дій дає головне меню (`AppCommands`).
+    @ToolbarContentBuilder
     private var vacancyButtons: some ToolbarContent {
         ToolbarItemGroup {
             Button {
@@ -108,28 +112,36 @@ struct MainWindowView: View {
             } label: {
                 Label("Додати", systemImage: "plus")
             }
-            .help("Додати вакансію")
+            .help("Додати вакансію (⌘N)")
             Button {
                 viewModel.editSelected()
             } label: {
                 Label("Редагувати", systemImage: "pencil")
             }
-            .help("Редагувати вибрану вакансію")
+            .help("Редагувати вибрану вакансію (⌘E)")
             .disabled(viewModel.canEditSelected == false)
             Button {
                 viewModel.duplicateSelected()
             } label: {
                 Label("Дублювати", systemImage: "square.on.square")
             }
-            .help("Дублювати вибрану вакансію")
+            .help("Дублювати вибрану вакансію (⌘D)")
             .disabled(viewModel.canEditSelected == false)
             Button {
                 viewModel.isDeleteConfirmationPresented = true
             } label: {
                 Label("Видалити", systemImage: "trash")
             }
-            .help("Видалити вибрані вакансії")
+            .help("Видалити вибрані вакансії (⌘⌫)")
             .disabled(viewModel.canDeleteSelected == false)
+        }
+        ToolbarItem {
+            Menu {
+                AnalysisMenuItems(viewModel: viewModel, showsShortcuts: false)
+            } label: {
+                Label("Аналіз", systemImage: "chart.bar.doc.horizontal")
+            }
+            .help("Функції 1–6 (⌘1…⌘6)")
         }
     }
 

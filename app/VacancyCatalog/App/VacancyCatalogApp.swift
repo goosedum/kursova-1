@@ -1,6 +1,6 @@
 //
 //  VacancyCatalogApp.swift
-//  Точка входу програми: одне головне вікно «Каталог вакансій».
+//  Точка входу програми: головне вікно «Каталог вакансій», вікно «Довідка» і головне меню.
 //
 
 import SwiftUI
@@ -8,7 +8,7 @@ import SwiftUI
 /// Програма «Каталог вакансій для ІТ-спеціалістів» (варіант 13).
 ///
 /// `@main` — з цієї структури програма починається. Стан вікна (`CatalogViewModel`) створюється тут один раз,
-/// щоб і вікно, і головне меню (крок 4.12) працювали з тим самим каталогом.
+/// щоб і вікно, і головне меню працювали з тим самим каталогом.
 @main
 struct VacancyCatalogApp: App {
 
@@ -21,5 +21,14 @@ struct VacancyCatalogApp: App {
             MainWindowView(viewModel: viewModel)
         }
         .defaultSize(width: 1440, height: 900)
+        .commands {
+            AppCommands(viewModel: viewModel)
+        }
+
+        // Окреме вікно довідки (⌘?), відкривається з меню «Довідка»
+        Window("Довідка", id: "help") {
+            HelpView()
+        }
+        .defaultSize(width: 760, height: 520)
     }
 }

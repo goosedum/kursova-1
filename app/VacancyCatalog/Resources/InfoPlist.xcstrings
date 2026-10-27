@@ -1,0 +1,40 @@
+{
+  "sourceLanguage" : "uk",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Назва програми у Finder і Dock",
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Каталог вакансій"
+          }
+        }
+      }
+    },
+    "CFBundleName" : {
+      "comment" : "Назва програми в рядку меню",
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Каталог вакансій"
+          }
+        }
+      }
+    },
+    "NSHumanReadableCopyright" : {
+      "comment" : "Copyright (human-readable)",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "© 2026 Власюк А. В., ПЗ-24, НУ «Львівська політехніка»"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

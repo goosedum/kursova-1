@@ -173,10 +173,10 @@
 				};
 			};
 			buildConfigurationList = 2533220430910B7600C2C334 /* Build configuration list for PBXProject "VacancyCatalog" */;
-			developmentRegion = en;
+			developmentRegion = uk;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
+				uk,
 				Base,
 			);
 			mainGroup = 2533220030910B7600C2C334;

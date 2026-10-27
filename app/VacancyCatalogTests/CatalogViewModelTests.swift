@@ -126,6 +126,38 @@ struct CatalogViewModelTests {
         #expect(viewModel.averageColumnTitle == "Середня")
     }
 
+    @Test("Контекстне меню: «Знайти за технологією» і «Вакансії компанії» запускають ф.2 і ф.1 (S-12)")
+    func contextMenuSearches() throws {
+        let viewModel = try makeViewModel()
+        viewModel.findVacancies(withTechnology: "Docker")
+        #expect(viewModel.selectedOperation === viewModel.operations[1])
+        #expect(viewModel.result?.vacancyCount == 6)
+        #expect(viewModel.highlightedTechnology == "Docker")
+
+        let search = try #require(viewModel.operations[0] as? SearchByTitleAndCompanyOperation)
+        search.titleQuery = "старий запит"
+        viewModel.findVacancies(ofCompany: "CloudPeak")
+        #expect(viewModel.selectedOperation === search)
+        #expect(search.titleQuery.isEmpty)
+        #expect(viewModel.result?.vacancyCount == 3)
+    }
+
+    @Test("«Аналіз → Виконати функцію»: виконує вибрану, лише якщо параметри заповнені")
+    func runSelectedFromMenu() throws {
+        let viewModel = try makeViewModel()
+        viewModel.runSelectedOperation()
+        #expect(viewModel.result == nil)
+
+        viewModel.select(viewModel.operations[0])
+        viewModel.runSelectedOperation()
+        #expect(viewModel.result == nil)
+
+        let search = try #require(viewModel.operations[0] as? SearchByTitleAndCompanyOperation)
+        search.companyQuery = "byte"
+        viewModel.runSelectedOperation()
+        #expect(viewModel.result?.vacancyCount == 3)
+    }
+
     @Test("Виділення технології ф.2 і «Нічого не знайдено»")
     func highlightAndNothingFound() throws {
         let viewModel = try makeViewModel()
