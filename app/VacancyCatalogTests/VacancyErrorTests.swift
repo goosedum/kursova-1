@@ -27,6 +27,20 @@ struct VacancyErrorTests {
                 == "Рядок 6: Поле «Компанія» не може бути порожнім.")
     }
 
+    @Test("Заголовок і текст алерта — як у Figma (S-15…S-17)")
+    func alertTexts() {
+        let range = VacancyError.minSalaryGreaterThanMax(min: 5000, max: 3000)
+        #expect(range.alertTitle == "Неправильний діапазон зарплати")
+        #expect(range.alertMessage.hasPrefix("Мінімальна зарплата (5000) більша за максимальну (3000). "))
+        #expect(VacancyError.invalidNumber(line: 6, field: "мінімальна зарплата", value: "abc").alertTitle
+                == "Не вдалося відкрити файл")
+        #expect(VacancyError.fileWriteFailed(path: "a.txt").alertTitle == "Не вдалося зберегти файл")
+        #expect(VacancyError.emptyField(name: "Компанія").alertTitle == "Неправильні дані вакансії")
+        // Для порожнього каталогу заголовок не повторюється в тексті
+        #expect(VacancyError.emptyCatalog.alertTitle == "Каталог порожній")
+        #expect(VacancyError.emptyCatalog.alertMessage == "Відкрийте файл або додайте вакансію.")
+    }
+
     @Test("Для кожної помилки є порада, що робити")
     func everyErrorHasRecoverySuggestion() {
         let errors: [VacancyError] = [

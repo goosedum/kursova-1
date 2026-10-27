@@ -205,6 +205,29 @@ struct VacancyTests {
         }
     }
 
+    @Test("Перевірка окремих полів: кожен метод бачить лише своє поле (для помилок під полями форми)")
+    func separateFieldChecks() throws {
+        let vacancy = makeVacancy()
+        vacancy.company = ""
+        vacancy.minSalary = 5000
+        vacancy.maxSalary = 3000
+
+        #expect(throws: VacancyError.emptyField(name: "Компанія")) {
+            try vacancy.validateCompany()
+        }
+        #expect(throws: VacancyError.minSalaryGreaterThanMax(min: 5000, max: 3000)) {
+            try vacancy.validateSalary()
+        }
+        // Посада, спеціалізація і технології правильні — їхні методи не кидають винятків
+        try vacancy.validateTitle()
+        try vacancy.validateSpecialization()
+        try vacancy.validateTechnologies()
+        // validate() повідомляє першу помилку — компанію
+        #expect(throws: VacancyError.emptyField(name: "Компанія")) {
+            try vacancy.validate()
+        }
+    }
+
     @Test("Вакансія з конструктора за замовчуванням не проходить перевірку")
     func defaultVacancyFailsValidation() {
         #expect(throws: VacancyError.emptyField(name: "Компанія")) {

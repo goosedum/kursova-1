@@ -1,6 +1,6 @@
 //
 //  MainWindowView.swift
-//  Головне вікно: сайдбар, таблиця вакансій (або порожній стан), панель деталей, рядок стану.
+//  Головне вікно: сайдбар, таблиця вакансій (або порожній стан), панель деталей, рядок стану, форма, алерти.
 //
 
 import SwiftUI
@@ -34,6 +34,7 @@ struct MainWindowView: View {
                         .inspectorColumnWidth(300)
                 }
                 .toolbar {
+                    vacancyButtons
                     ToolbarItem(placement: .primaryAction) {
                         Button {
                             isInspectorPresented.toggle()
@@ -55,10 +56,25 @@ struct MainWindowView: View {
                 break
             }
         }
-        .alert(viewModel.errorAlert?.errorDescription ?? "", isPresented: isErrorAlertPresented) {
+        // Форма вакансії — лист поверх вікна (UC-07, UC-08)
+        .sheet(isPresented: $viewModel.isFormPresented) {
+            if let draft = viewModel.editingDraft {
+                VacancyFormView(viewModel: viewModel, draft: draft)
+            }
+        }
+        // Підтвердження видалення однієї або кількох вибраних вакансій (UC-10, D-25)
+        .alert(viewModel.deleteConfirmationTitle, isPresented: $viewModel.isDeleteConfirmationPresented) {
+            Button("Видалити", role: .destructive) {
+                viewModel.deleteSelected()
+            }
+            Button("Скасувати", role: .cancel) {}
+        } message: {
+            Text(viewModel.deleteConfirmationMessage)
+        }
+        .alert(viewModel.errorAlert?.alertTitle ?? "", isPresented: isErrorAlertPresented) {
             Button("OK") {}
         } message: {
-            Text(viewModel.errorAlert?.recoverySuggestion ?? "")
+            Text(viewModel.errorAlert?.alertMessage ?? "")
         }
     }
 
@@ -76,11 +92,45 @@ struct MainWindowView: View {
         }
     }
 
-    /// Алерт показується, поки в `errorAlert` є помилка; кнопка «OK» закриває його і очищує помилку.
+    /// Кнопки вакансій на панелі інструментів: додати, редагувати, дублювати, видалити (Figma: `Organism/Toolbar`).
+    /// Гарячі клавіші до них додає головне меню (крок 4.12).
+    private var vacancyButtons: some ToolbarContent {
+        ToolbarItemGroup {
+            Button {
+                viewModel.newVacancy()
+            } label: {
+                Label("Додати", systemImage: "plus")
+            }
+            .help("Додати вакансію")
+            Button {
+                viewModel.editSelected()
+            } label: {
+                Label("Редагувати", systemImage: "pencil")
+            }
+            .help("Редагувати вибрану вакансію")
+            .disabled(viewModel.canEditSelected == false)
+            Button {
+                viewModel.duplicateSelected()
+            } label: {
+                Label("Дублювати", systemImage: "square.on.square")
+            }
+            .help("Дублювати вибрану вакансію")
+            .disabled(viewModel.canEditSelected == false)
+            Button {
+                viewModel.isDeleteConfirmationPresented = true
+            } label: {
+                Label("Видалити", systemImage: "trash")
+            }
+            .help("Видалити вибрані вакансії")
+            .disabled(viewModel.canDeleteSelected == false)
+        }
+    }
+
+    /// Алерт помилки вікна. Поки відкрита форма, помилку показує сама форма (алерт поверх листа).
     private var isErrorAlertPresented: Binding<Bool> {
         return Binding(
             get: {
-                return viewModel.errorAlert != nil
+                return viewModel.errorAlert != nil && viewModel.isFormPresented == false
             },
             set: { isPresented in
                 if isPresented == false {

@@ -139,15 +139,36 @@ class Vacancy: Identifiable {
 
     /// Перевіряє дані вакансії за правилами з `docs/analysis/02-data-model.md`, §5. Поля не змінює.
     ///
+    /// Поля перевіряються по черзі тими самими методами, що й під полями форми (`validateCompany()` …).
     /// - Throws: `VacancyError.emptyField`, `.fieldTooLong`, `.forbiddenCharacter`, `.salaryOutOfRange`,
     ///   `.minSalaryGreaterThanMax`, `.noTechnologies` або `.tooManyTechnologies` — першу знайдену помилку.
     func validate() throws {
-        // 1. Текстові поля: не порожні, не задовгі, без «;»
-        try checkText(company, name: "Компанія", limit: Vacancy.maxCompanyLength)
-        try checkText(title, name: "Посада", limit: Vacancy.maxTitleLength)
-        try checkText(specialization, name: "Спеціалізація", limit: Vacancy.maxSpecializationLength)
+        try validateCompany()
+        try validateTitle()
+        try validateSpecialization()
+        try validateSalary()
+        try validateTechnologies()
+    }
 
-        // 2. Зарплата: від 0 до 100 000 і мінімальна не більша за максимальну
+    // MARK: - Перевірка окремих полів (для повідомлень під полями форми)
+
+    /// Компанія: не порожня, до 60 символів, без «;».
+    func validateCompany() throws {
+        try checkText(company, name: "Компанія", limit: Vacancy.maxCompanyLength)
+    }
+
+    /// Посада: не порожня, до 80 символів, без «;».
+    func validateTitle() throws {
+        try checkText(title, name: "Посада", limit: Vacancy.maxTitleLength)
+    }
+
+    /// Спеціалізація: не порожня, до 40 символів, без «;».
+    func validateSpecialization() throws {
+        try checkText(specialization, name: "Спеціалізація", limit: Vacancy.maxSpecializationLength)
+    }
+
+    /// Зарплата: від 0 до 100 000 і мінімальна не більша за максимальну.
+    func validateSalary() throws {
         for salary in [minSalary, maxSalary] {
             if salary < 0 || salary > Vacancy.maxSalary {
                 throw VacancyError.salaryOutOfRange(value: salary)
@@ -156,8 +177,10 @@ class Vacancy: Identifiable {
         if minSalary > maxSalary {
             throw VacancyError.minSalaryGreaterThanMax(min: minSalary, max: maxSalary)
         }
+    }
 
-        // 3. Технології: від 1 до 15, кожна не довша за 30 символів, без «;» і «,»
+    /// Технології: від 1 до 15, кожна не довша за 30 символів, без «;» і «,».
+    func validateTechnologies() throws {
         let cleaned = cleanedTechnologies()
         if cleaned.isEmpty {
             throw VacancyError.noTechnologies

@@ -244,8 +244,11 @@ struct CatalogViewModelTests {
         viewModel.selectedVacancyIDs = [first.id]
         #expect(viewModel.deleteConfirmationTitle == "Видалити вакансію «Junior iOS Developer» (ByteForge)?")
 
+        #expect(viewModel.deleteConfirmationMessage == "Вакансію буде видалено з каталогу.")
+
         viewModel.selectedVacancyIDs = [first.id, viewModel.catalog.vacancies[5].id, viewModel.catalog.vacancies[9].id]
         #expect(viewModel.deleteConfirmationTitle == "Видалити 3 вибрані вакансії?")
+        #expect(viewModel.deleteConfirmationMessage == "Вакансії буде видалено з каталогу.")
         viewModel.isDeleteConfirmationPresented = true
         viewModel.deleteSelected()
 

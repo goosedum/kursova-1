@@ -21,6 +21,7 @@ package "ViewModel" {
     + /canDeleteSelected : Bool
     + /isEditingExisting : Bool
     + /deleteConfirmationTitle : String
+    + /deleteConfirmationMessage : String
     + /catalogName : String
     + /windowSubtitle : String
     + /statusText : String

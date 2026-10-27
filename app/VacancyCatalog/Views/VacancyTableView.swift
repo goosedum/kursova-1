@@ -81,6 +81,12 @@ struct VacancyTableView: View {
                 }
             }
         }
+        // Подвійний клік по рядку — редагувати (UC-08). Пункти контекстного меню додає крок 4.12.
+        .contextMenu(forSelectionType: UUID.self) { _ in
+        } primaryAction: { clickedIDs in
+            viewModel.selectedVacancyIDs = clickedIDs
+            viewModel.editSelected()
+        }
     }
 
     /// Чи виділити чип: технологія збігається із запитом ф.2 (без урахування регістру).

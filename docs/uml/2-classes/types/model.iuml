@@ -26,6 +26,11 @@ package "Model" {
     + hasTechnology(_ name: String) : Bool
     + normalize()
     + validate() throws
+    + validateCompany() throws
+    + validateTitle() throws
+    + validateSpecialization() throws
+    + validateSalary() throws
+    + validateTechnologies() throws
     - checkText(_ value: String, name: String, limit: Int) throws
     - cleanedTechnologies() : [String]
   }
@@ -66,6 +71,8 @@ package "Model" {
     --
     + /errorDescription : String?
     + /recoverySuggestion : String?
+    + /alertTitle : String
+    + /alertMessage : String
   }
   interface LocalizedError <<protocol>>
   class VacancyGroup <<struct>> {

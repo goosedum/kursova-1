@@ -89,6 +89,33 @@ enum VacancyError: LocalizedError, Equatable {
         }
     }
 
+    /// Заголовок алерта — коротко, що не вдалося (Figma: `AlertDialog`, екрани S-15…S-17).
+    var alertTitle: String {
+        switch self {
+        case .fileNotFound, .fileReadFailed, .invalidFieldCount, .invalidNumber, .unknownValue, .invalidData:
+            return "Не вдалося відкрити файл"
+        case .fileWriteFailed:
+            return "Не вдалося зберегти файл"
+        case .emptyField, .fieldTooLong, .forbiddenCharacter, .noTechnologies, .tooManyTechnologies:
+            return "Неправильні дані вакансії"
+        case .salaryOutOfRange:
+            return "Неправильна зарплата"
+        case .minSalaryGreaterThanMax:
+            return "Неправильний діапазон зарплати"
+        case .emptyCatalog:
+            return "Каталог порожній"
+        }
+    }
+
+    /// Текст алерта: що сталося і що робити. Для порожнього каталогу — лише порада (заголовок уже все каже).
+    var alertMessage: String {
+        let suggestion = recoverySuggestion ?? ""
+        if self == .emptyCatalog {
+            return suggestion
+        }
+        return (errorDescription ?? "") + " " + suggestion
+    }
+
     /// Що зробити користувачу.
     var recoverySuggestion: String? {
         switch self {

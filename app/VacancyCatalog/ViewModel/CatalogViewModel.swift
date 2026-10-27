@@ -102,6 +102,14 @@ class CatalogViewModel {
         return "Видалити \(count)?"
     }
 
+    /// Пояснення під питанням про видалення (Figma S-18.1, S-18.2).
+    var deleteConfirmationMessage: String {
+        if selectedVacancies.count == 1 {
+            return "Вакансію буде видалено з каталогу."
+        }
+        return "Вакансії буде видалено з каталогу."
+    }
+
     /// Назва каталогу під заголовком вікна: ім'я файлу, «Демо-дані» або «Без назви».
     var catalogName: String {
         if let url = currentFileURL {
