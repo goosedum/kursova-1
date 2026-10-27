@@ -10,7 +10,7 @@ package "Storage" {
   }
   class VacancyFileWriter {
     - url : URL
-    - buffer : String
+    - buffer : [String]
     --
     + init(url: URL)
     + {static} << (writer: VacancyFileWriter,\n  vacancy: Vacancy) : VacancyFileWriter
