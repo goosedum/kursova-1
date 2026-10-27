@@ -1,0 +1,51 @@
+@startuml
+' SD-2. Ф.4 — сортування за середньою зарплатою злиттям (UC-14, D-11, D-14, D-26). Крок 3.3.
+!include style.iuml
+
+actor "Користувач" as U
+participant ":MainWindowView" as UI
+participant "vm :\nCatalogViewModel" as VM
+participant "op :\nSortByAverage\nSalaryOperation" as OP
+participant "catalog :\nVacancyCatalog" as C
+participant "sorter :\nMergeSorter<Vacancy>" as MS
+
+U -> UI : сайдбар «Сортування за ЗП» (⌘4)
+UI -> VM : selectedOperation = op
+U -> UI : напрям ↓/↑,\n«Виконати» (⌘⏎)
+UI -> VM : run(op)
+activate VM
+VM -> OP : try execute(on: catalog)
+note right of VM : op має тип\nCatalogOperation;\nвиконується\nперевизначений\nметод підкласу\n(поліморфізм)
+activate OP
+OP -> C : vacancies
+C --> OP : [Vacancy]
+alt каталог порожній
+  OP --> VM : throw VacancyError.emptyCatalog
+  VM -> VM : errorAlert = error  (do-catch)
+  VM --> UI
+  UI --> U : алерт «Каталог\nпорожній» (S-17)
+else є вакансії
+  OP -> MS ** : MergeSorter<Vacancy>()
+  OP -> MS : sort(vacancies, by:\nпорівняння averageSalary,\n↓ або ↑ за ascending)
+  activate MS
+  group рекурсія sort
+    MS -> MS : ≤ 1 елемента →\nповернути як є
+    MS -> MS : left = sort(\nперша половина)
+    MS -> MS : right = sort(\nдруга половина)
+    MS -> MS : merge(left, right, by:)
+    loop обидві половини\n не порожні
+      MS -> MS : узяти менший перший\nелемент (при рівності —\nз лівої, стабільно)
+    end
+    MS -> MS : дописати залишок
+  end
+  MS --> OP : відсортований масив
+  deactivate MS
+  OP -> OP : result = OperationResult(\ntitle:, summary:,\ngroups: [VacancyGroup(…)])
+  OP --> VM : result
+  deactivate OP
+  VM -> VM : self.result = result
+  VM --> UI
+  UI --> U : таблиця,\n«Середня ↓» (S-06)
+end
+deactivate VM
+@enduml

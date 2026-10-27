@@ -1,0 +1,48 @@
+@startuml
+' SD-3. Додати вакансію з перевіркою даних (UC-07, UC-18, UC-21, D-31). Крок 3.3.
+!include style.iuml
+
+actor "Користувач" as U
+participant ":MainWindowView" as UI
+participant ":VacancyFormView" as F
+participant "vm :\nCatalogViewModel" as VM
+participant "draft :\nVacancy" as D
+participant "catalog :\nVacancyCatalog" as C
+
+U -> UI : «+» або Вакансія → Додати (⌘N)
+UI -> VM : newVacancy()
+activate VM
+VM -> D ** : Vacancy() — конструктор\nза замовчуванням
+VM -> VM : editingDraft = draft\nisFormPresented = true
+VM --> UI
+deactivate VM
+UI -> F ** : показати лист (sheet)
+loop поки користувач заповнює поля
+  U -> F : змінює поле
+  F -> D : записати значення
+  F -> D : try validate()
+  F --> U : помилка під полем\nабо її немає (S-11)
+end
+U -> F : «Зберегти» (завжди\nактивна, D-31)
+F -> VM : saveDraft()
+activate VM
+VM -> C : try add(draft)
+activate C
+C -> D : try validate()
+alt дані правильні
+  D --> C
+  C -> C : vacancies.append(draft)
+  C --> VM
+  VM -> VM : selectedVacancyIDs\n= [draft.id]\nhasUnsavedChanges\n= true\nisFormPresented\n= false
+  VM --> UI
+  UI --> U : лист закрито, нова\nвакансія виділена,\n«● Є незбережені зміни»
+else дані з помилкою
+  D --> C : throw VacancyError\n(напр. minSalaryGreaterThanMax)
+  C --> VM : throw VacancyError
+  deactivate C
+  VM -> VM : errorAlert = error  (do-catch)
+  VM --> F
+  F --> U : алерт «Неправильний\nдіапазон зарплати» (S-16),\nформа лишається відкритою
+end
+deactivate VM
+@enduml

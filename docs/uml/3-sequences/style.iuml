@@ -1,0 +1,11 @@
+' Спільний стиль діаграм послідовності (крок 3.3).
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam dpi 200
+skinparam maxMessageSize 120
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+hide footbox
+autonumber

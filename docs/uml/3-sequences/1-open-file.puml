@@ -1,0 +1,55 @@
+@startuml
+' SD-1. Відкрити каталог з файлу (UC-02, D-23, D-24). Крок 3.3.
+!include style.iuml
+
+actor "Користувач" as U
+participant ":MainWindowView" as UI
+participant "vm :\nCatalogViewModel" as VM
+participant "catalog :\nVacancyCatalog" as C
+participant "reader :\nVacancyFileReader" as R
+participant "buffer :\nVacancy" as B
+
+U -> UI : Файл → Відкрити… (⌘O)
+opt є незбережені зміни (vm.hasUnsavedChanges)
+  UI -> U : «Зберегти зміни в каталозі?» (UC-22)
+  U --> UI : Зберегти / Не зберігати
+end
+UI -> U : вікно вибору файлу (.txt)
+U --> UI : url
+UI -> VM : open(url: url)
+activate VM
+VM -> C : try load(from: url)
+activate C
+C -> R ** : try init(url: url)
+note right of R : читає текст,\nділить на рядки;\nкидає fileNotFound /\nfileReadFailed
+C -> B ** : Vacancy()
+C -> C : loaded = []  (тимчасовий масив)
+loop поки try reader >> buffer повертає true
+  C -> R : reader >> buffer
+  activate R
+  R -> R : наступний рядок (без порожніх\nі «#»), розбити на 8 полів (UC-19)
+  R -> B : заповнити поля
+  R -> B : try validate()  (UC-18)
+  alt рядок правильний
+    R --> C : true
+    C -> C : loaded.append(Vacancy(copyOf: buffer))
+  else помилка в рядку N
+    R --> C : throw VacancyError\n(«Рядок N: …»); читання\nзупиняється (D-23)
+  end
+  deactivate R
+end
+alt файл прочитано без помилок
+  C -> C : vacancies = loaded
+  C --> VM
+  VM -> VM : currentFileURL = url,\nhasUnsavedChanges = false,\nshowAll()
+  VM --> UI : новий стан
+  UI --> U : таблиця, «28 вакансій\n· vacancies.txt»
+else VacancyError (з init(url:) або з >>)
+  C --> VM : throw VacancyError\n(vacancies не змінено)
+  deactivate C
+  VM -> VM : errorAlert = error  (do-catch)
+  VM --> UI
+  UI --> U : алерт «Не вдалося\nвідкрити файл» (S-15)
+end
+deactivate VM
+@enduml
