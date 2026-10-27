@@ -45,6 +45,8 @@ class CatalogViewModel {
     var currentFileURL: URL?
     /// Чи є зміни, яких ще немає у файлі (D-24).
     var hasUnsavedChanges = false
+    /// Чи відкрито вбудовані демо-дані (для назви каталогу в заголовку вікна).
+    private(set) var isDemoCatalog = false
 
     /// Помилка, яку треба показати в алерті; після закриття алерта — `nil`.
     var errorAlert: VacancyError?
@@ -100,7 +102,88 @@ class CatalogViewModel {
         return "Видалити \(count)?"
     }
 
+    /// Назва каталогу під заголовком вікна: ім'я файлу, «Демо-дані» або «Без назви».
+    var catalogName: String {
+        if let url = currentFileURL {
+            return url.lastPathComponent
+        }
+        if isDemoCatalog {
+            return "Демо-дані"
+        }
+        return "Без назви"
+    }
+
+    /// Підзаголовок вікна: «vacancies.txt · 28 вакансій».
+    var windowSubtitle: String {
+        return catalogName + " · " + TextFormat.vacancies(catalog.vacancies.count)
+    }
+
+    /// Ліва частина рядка стану (тексти з Figma S-01…S-08):
+    /// «28 вакансій · vacancies.txt», «Показано 2 з 28 вакансій · …», «28 вакансій у 8 групах · …»,
+    /// «28 вакансій · за спаданням середньої зарплати · …», «0 вакансій · новий каталог».
+    var statusText: String {
+        let total = catalog.vacancies.count
+        var place = "новий каталог"
+        if let url = currentFileURL {
+            place = url.lastPathComponent
+        } else if isDemoCatalog {
+            place = "демо-дані"
+        }
+
+        guard let currentResult = result else {
+            return TextFormat.vacancies(total) + " · " + place
+        }
+        let shown = currentResult.vacancyCount
+        if shown == total && currentResult.groups.count > 1 {
+            // Ф.6: усі вакансії, розкладені по групах
+            let groups = TextFormat.count(currentResult.groups.count, one: "групі", few: "групах", many: "групах")
+            return TextFormat.vacancies(total) + " у " + groups + " · " + place
+        }
+        if shown == total && total > 0 {
+            // Ф.4: усі вакансії в іншому порядку — пишемо, в якому саме
+            return TextFormat.vacancies(total) + " · " + lowercasedFirstLetter(currentResult.title) + " · " + place
+        }
+        // Ф.1–3, ф.5: частина каталогу («з 28 вакансій» — родовий відмінок)
+        let of = TextFormat.count(total, one: "вакансії", few: "вакансій", many: "вакансій")
+        return "Показано \(shown) з " + of + " · " + place
+    }
+
+    /// Технологія, яку виділити в таблиці: запит ф.2, коли показано її результат; інакше порожньо.
+    var highlightedTechnology: String {
+        if result == nil {
+            return ""
+        }
+        if let search = selectedOperation as? SearchByTechnologyOperation {
+            return search.technology
+        }
+        return ""
+    }
+
+    /// Порожній каталог — замість таблиці порожній стан з порадами (S-01).
+    var isCatalogEmpty: Bool {
+        return catalog.vacancies.isEmpty
+    }
+
+    /// Функція нічого не знайшла — замість таблиці «Нічого не знайдено».
+    var isNothingFound: Bool {
+        if let currentResult = result {
+            return currentResult.vacancyCount == 0 && catalog.vacancies.isEmpty == false
+        }
+        return false
+    }
+
     // MARK: - Функції 1–6
+
+    /// Вибір функції в сайдбарі. Якщо параметри вже задані (ф.3–6), результат показується одразу;
+    /// ф.1 і ф.2 спершу чекають на введення в панелі параметрів.
+    func select(_ operation: CatalogOperation) {
+        if operation.canExecute {
+            run(operation)
+        } else {
+            selectedOperation = operation
+            result = nil
+        }
+    }
 
     /// «Усі вакансії» в сайдбарі: таблиця показує весь каталог.
     func showAll() {
@@ -208,6 +291,7 @@ class CatalogViewModel {
     func newCatalog() {
         catalog.removeAll()
         currentFileURL = nil
+        isDemoCatalog = false
         hasUnsavedChanges = false
         selectedVacancyIDs = []
         showAll()
@@ -218,6 +302,7 @@ class CatalogViewModel {
         withAccess(to: url) {
             try catalog.load(from: url)
             currentFileURL = url
+            isDemoCatalog = false
             hasUnsavedChanges = false
             selectedVacancyIDs = []
             showAll()
@@ -241,6 +326,7 @@ class CatalogViewModel {
         withAccess(to: url) {
             try catalog.save(to: url)
             currentFileURL = url
+            isDemoCatalog = false
             hasUnsavedChanges = false
         }
     }
@@ -260,12 +346,21 @@ class CatalogViewModel {
             return
         }
         currentFileURL = nil
+        isDemoCatalog = true
         hasUnsavedChanges = false
         selectedVacancyIDs = []
         showAll()
     }
 
     // MARK: - Допоміжні методи
+
+    /// «За спаданням …» → «за спаданням …» (для середини речення в рядку стану).
+    private func lowercasedFirstLetter(_ text: String) -> String {
+        guard let first = text.first else {
+            return text
+        }
+        return first.lowercased() + text.dropFirst()
+    }
 
     /// Закриває форму і забуває чернетку.
     private func closeForm() {

@@ -14,13 +14,21 @@ package "ViewModel" {
     + isDeleteConfirmationPresented : Bool
     + isSavePanelPresented : Bool
     - editingOriginal : Vacancy?
+    - isDemoCatalog : Bool {readOnly}
     + /displayedGroups : [VacancyGroup]
     + /selectedVacancies : [Vacancy]
     + /canEditSelected : Bool
     + /canDeleteSelected : Bool
     + /isEditingExisting : Bool
     + /deleteConfirmationTitle : String
+    + /catalogName : String
+    + /windowSubtitle : String
+    + /statusText : String
+    + /highlightedTechnology : String
+    + /isCatalogEmpty : Bool
+    + /isNothingFound : Bool
     --
+    + select(_ operation: CatalogOperation)
     + showAll()
     + run(_ operation: CatalogOperation)
     + newVacancy()
@@ -38,5 +46,6 @@ package "ViewModel" {
     - refreshResult()
     - withAccess(to url: URL, _ action: () throws -> Void)
     - showError(_ error: Error)
+    - lowercasedFirstLetter(_ text: String) : String
   }
 }

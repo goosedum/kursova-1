@@ -58,6 +58,72 @@ struct CatalogViewModelTests {
         #expect(viewModel.result == nil)
     }
 
+    // MARK: - Тексти вікна (Figma S-01…S-08)
+
+    @Test("Рядок стану й підзаголовок: новий каталог, файл, демо-дані")
+    func statusAndSubtitle() throws {
+        let viewModel = CatalogViewModel()
+        #expect(viewModel.statusText == "0 вакансій · новий каталог")
+        #expect(viewModel.windowSubtitle == "Без назви · 0 вакансій")
+        #expect(viewModel.isCatalogEmpty)
+
+        viewModel.open(url: try TestFiles.fixture("vacancies"))
+        #expect(viewModel.statusText == "28 вакансій · vacancies.txt")
+        #expect(viewModel.windowSubtitle == "vacancies.txt · 28 вакансій")
+
+        viewModel.loadDemoData()
+        #expect(viewModel.statusText == "28 вакансій · демо-дані")
+        #expect(viewModel.windowSubtitle == "Демо-дані · 28 вакансій")
+    }
+
+    @Test("Рядок стану для результатів функцій 1, 4, 5, 6")
+    func statusForResults() throws {
+        let viewModel = try makeViewModel()
+        let search = try #require(viewModel.operations[0] as? SearchByTitleAndCompanyOperation)
+        search.titleQuery = "developer"
+        search.companyQuery = "byte"
+        viewModel.run(search)
+        #expect(viewModel.statusText == "Показано 2 з 28 вакансій · vacancies.txt")
+
+        viewModel.run(viewModel.operations[3])
+        #expect(viewModel.statusText == "28 вакансій · за спаданням середньої зарплати · vacancies.txt")
+
+        viewModel.run(viewModel.operations[4])
+        #expect(viewModel.statusText == "Показано 5 з 28 вакансій · vacancies.txt")
+
+        viewModel.run(viewModel.operations[5])
+        #expect(viewModel.statusText == "28 вакансій у 8 групах · vacancies.txt")
+    }
+
+    @Test("Вибір у сайдбарі: ф.3–6 виконуються одразу, ф.1–2 чекають на введення")
+    func selectInSidebar() throws {
+        let viewModel = try makeViewModel()
+        viewModel.select(viewModel.operations[2])
+        #expect(viewModel.result?.vacancyCount == 5)
+
+        viewModel.select(viewModel.operations[0])
+        #expect(viewModel.selectedOperation === viewModel.operations[0])
+        #expect(viewModel.result == nil)
+        #expect(viewModel.displayedGroups[0].vacancies.count == 28)
+    }
+
+    @Test("Виділення технології ф.2 і «Нічого не знайдено»")
+    func highlightAndNothingFound() throws {
+        let viewModel = try makeViewModel()
+        let technology = try #require(viewModel.operations[1] as? SearchByTechnologyOperation)
+        technology.technology = "Swift"
+        #expect(viewModel.highlightedTechnology.isEmpty)
+        viewModel.run(technology)
+        #expect(viewModel.highlightedTechnology == "Swift")
+        #expect(viewModel.isNothingFound == false)
+
+        technology.technology = "Rust"
+        viewModel.run(technology)
+        #expect(viewModel.isNothingFound)
+        viewModel.showAll()
+        #expect(viewModel.highlightedTechnology.isEmpty)
+    }
+
     // MARK: - Форма
 
     @Test("Додати: нова вакансія потрапляє в кінець каталогу і стає вибраною")
