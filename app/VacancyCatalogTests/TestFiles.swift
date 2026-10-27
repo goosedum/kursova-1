@@ -32,6 +32,26 @@ class TestFiles {
         return url
     }
 
+    /// Каталог з демо-файлу `samples/vacancies.txt` (28 вакансій; еталон — `docs/analysis/03-test-data.md`).
+    static func demoCatalog() throws -> VacancyCatalog {
+        let catalog = VacancyCatalog()
+        try catalog.load(from: fixture("vacancies"))
+        return catalog
+    }
+
+    /// Номери вакансій, як у `03-test-data.md`: вакансія № N — це `catalog.vacancies[N - 1]`.
+    static func numbers(of vacancies: [Vacancy], in catalog: VacancyCatalog) -> [Int] {
+        var result: [Int] = []
+        for vacancy in vacancies {
+            for index in 0..<catalog.vacancies.count {
+                if catalog.vacancies[index] === vacancy {
+                    result.append(index + 1)
+                }
+            }
+        }
+        return result
+    }
+
     /// Читає всі вакансії з файлу так, як це робитиме каталог: `>>` у буфер, у масив — копія буфера.
     static func readVacancies(from url: URL) throws -> [Vacancy] {
         let reader = try VacancyFileReader(url: url)

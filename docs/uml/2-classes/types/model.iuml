@@ -70,8 +70,11 @@ package "Model" {
   interface LocalizedError <<protocol>>
   class VacancyGroup <<struct>> {
     + title : String {readOnly}
+    + subtitle : String {readOnly}
     + vacancies : [Vacancy] {readOnly}
     + /id : String
+    --
+    + init(title: String, subtitle: String = "",\n  vacancies: [Vacancy])
   }
   class SalaryRangeExtremes <<struct>> {
     + minRange : Int

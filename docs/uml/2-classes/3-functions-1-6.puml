@@ -25,5 +25,6 @@ CatalogOperation ..> VacancyError : <<throws>>\nemptyCatalog
 SortByAverageSalaryOperation ..> MergeSorter
 GroupBySpecializationOperation ..> MergeSorter
 SalaryRangeExtremesOperation ..> SalaryRangeExtremes
+CatalogOperation ..> TextFormat : підсумок
 OperationResult *-- "1..*" VacancyGroup
 @enduml

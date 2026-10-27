@@ -21,7 +21,7 @@ Views (SwiftUI)  →  CatalogViewModel  →  Logic (каталог, операц
 | `ExperienceLevel` | enum | рівень досвіду | 5 випадків; `title` (для UI), `order` (для порівняння) |
 | `WorkFormat` | enum | формат роботи | 3 випадки; `title`, `systemImage` |
 | `VacancyError` | enum : Error | усі виняткові ситуації | 13 випадків; `errorDescription` (що сталося), `recoverySuggestion` (що робити) |
-| `VacancyGroup` | struct | група вакансій із заголовком | `title`, `vacancies` — результат ф.5, ф.6 |
+| `VacancyGroup` | struct | група вакансій із заголовком | `title`, `subtitle` (напр. «макс − мін = $300»), `vacancies` — результат ф.1–6 (для списку — одна група без заголовка) |
 | `SalaryRangeExtremes` | struct | результат ф.5 | `minRange`, `minRangeVacancies`, `maxRange`, `maxRangeVacancies` |
 
 ### Storage — файли

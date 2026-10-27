@@ -5,20 +5,30 @@ package "Logic" {
     - merge(_ left: [Element], _ right: [Element],\n  by isOrderedBefore: (Element, Element) -> Bool) : [Element]
   }
   abstract class CatalogOperation {
-    + title : String
-    + systemImage : String
-    + helpText : String
+    + title : String {readOnly}
+    + shortTitle : String {readOnly}
+    + systemImage : String {readOnly}
+    + helpText : String {readOnly}
+    + /canExecute : Bool
     --
-    + init(title: String, systemImage: String, helpText: String)
+    + init(title: String, shortTitle: String,\n  systemImage: String, helpText: String)
     + {abstract} execute(on catalog: VacancyCatalog) throws : OperationResult
+    + checkNotEmpty(_ catalog: VacancyCatalog) throws
+    + searchResult(title: String, found: [Vacancy]) : OperationResult
   }
   class SearchByTitleAndCompanyOperation {
     + titleQuery : String
     + companyQuery : String
+    + /canExecute : Bool {override}
+    --
     + execute(on:) throws : OperationResult
+    - text(_:contains:) : Bool
+    - describe(title:company:) : String
   }
   class SearchByTechnologyOperation {
     + technology : String
+    + /canExecute : Bool {override}
+    --
     + execute(on:) throws : OperationResult
   }
   class FilterByLevelAndFormatOperation {
@@ -31,6 +41,7 @@ package "Logic" {
     + execute(on:) throws : OperationResult
   }
   class SalaryRangeExtremesOperation {
+    + findExtremes(in catalog: VacancyCatalog) throws : SalaryRangeExtremes
     + execute(on:) throws : OperationResult
   }
   class GroupBySpecializationOperation {
@@ -40,5 +51,11 @@ package "Logic" {
     + title : String
     + summary : String
     + groups : [VacancyGroup]
+    + /vacancyCount : Int
+  }
+  class TextFormat <<enum, utility>> {
+    + {static} count(_ number: Int, one: String,\n  few: String, many: String) : String
+    + {static} vacancies(_ number: Int) : String
+    + {static} money(_ amount: Int) : String
   }
 }
