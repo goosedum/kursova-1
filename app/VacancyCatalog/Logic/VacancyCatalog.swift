@@ -51,6 +51,19 @@ class VacancyCatalog {
         vacancies.append(vacancy)
     }
 
+    /// Вставляє вакансію одразу після `other` (дублювання, UC-09). Якщо `other` у каталозі немає — у кінець.
+    ///
+    /// - Throws: `VacancyError` з `validate()`, якщо дані неправильні; тоді каталог не змінюється.
+    func insert(_ vacancy: Vacancy, after other: Vacancy) throws {
+        try vacancy.validate()
+        vacancy.normalize()
+        if let position = position(of: other) {
+            vacancies.insert(vacancy, at: position + 1)
+        } else {
+            vacancies.append(vacancy)
+        }
+    }
+
     /// Ставить відредаговану вакансію `new` на місце `old` (порядок рядків не змінюється).
     ///
     /// Форма редагує копію (`Vacancy(copyOf:)`), тому старий об'єкт лишається незмінним, доки дані не перевірено.

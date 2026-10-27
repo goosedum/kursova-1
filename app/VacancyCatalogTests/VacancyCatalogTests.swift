@@ -64,6 +64,20 @@ struct VacancyCatalogTests {
         #expect(catalog.vacancies.count == 3)
     }
 
+    @Test("insert: копія стає одразу після оригіналу; чужий оригінал — у кінець")
+    func insertAfterOriginal() throws {
+        let catalog = try makeCatalog()
+        let copy = Vacancy(copyOf: catalog.vacancies[0])
+        try catalog.insert(copy, after: catalog.vacancies[0])
+        #expect(catalog.vacancies.count == 4)
+        #expect(catalog.vacancies[1] === copy)
+        #expect(catalog.vacancies[2].company == "B")
+
+        let other = makeVacancy(company: "D")
+        try catalog.insert(other, after: makeVacancy(company: "X"))
+        #expect(catalog.vacancies[4] === other)
+    }
+
     // MARK: - Заміна (редагування через копію)
 
     @Test("replace: копія з правками стає на місце оригіналу, оригінал не змінився")

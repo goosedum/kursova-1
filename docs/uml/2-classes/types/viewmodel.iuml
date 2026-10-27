@@ -12,6 +12,14 @@ package "ViewModel" {
     + hasUnsavedChanges : Bool
     + errorAlert : VacancyError?
     + isDeleteConfirmationPresented : Bool
+    + isSavePanelPresented : Bool
+    - editingOriginal : Vacancy?
+    + /displayedGroups : [VacancyGroup]
+    + /selectedVacancies : [Vacancy]
+    + /canEditSelected : Bool
+    + /canDeleteSelected : Bool
+    + /isEditingExisting : Bool
+    + /deleteConfirmationTitle : String
     --
     + showAll()
     + run(_ operation: CatalogOperation)
@@ -20,10 +28,15 @@ package "ViewModel" {
     + duplicateSelected()
     + deleteSelected()
     + saveDraft()
+    + cancelEditing()
     + newCatalog()
     + open(url: URL)
     + save()
     + saveAs(url: URL)
     + loadDemoData()
+    - closeForm()
+    - refreshResult()
+    - withAccess(to url: URL, _ action: () throws -> Void)
+    - showError(_ error: Error)
   }
 }

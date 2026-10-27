@@ -6,6 +6,7 @@ package "Logic" {
     + /allSpecializations : [String]
     --
     + add(_ vacancy: Vacancy) throws
+    + insert(_ vacancy: Vacancy, after other: Vacancy) throws
     + replace(_ old: Vacancy, with new: Vacancy) throws
     + remove(_ vacancy: Vacancy)
     + removeAll()
