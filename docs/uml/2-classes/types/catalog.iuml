@@ -11,5 +11,7 @@ package "Logic" {
     + removeAll()
     + load(from url: URL) throws
     + save(to url: URL) throws
+    - position(of vacancy: Vacancy) : Int?
+    - uniqueSorted(_ names: [String]) : [String]
   }
 }
