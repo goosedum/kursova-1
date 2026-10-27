@@ -1,6 +1,6 @@
 //
 //  AppCommands.swift
-//  Головне меню програми: «Вакансія», «Аналіз», «Довідка» з гарячими клавішами.
+//  Головне меню програми: «Файл», «Вакансія», «Аналіз», «Довідка» з гарячими клавішами.
 //
 
 import SwiftUI
@@ -18,8 +18,34 @@ struct AppCommands: Commands {
     @Environment(\.openWindow) private var openWindow
 
     var body: some Commands {
-        // Системний пункт «Новий» забирав би ⌘N; пункти меню «Файл» з'являться на кроці 4.13
-        CommandGroup(replacing: .newItem) {}
+        // Меню «Файл»: власні пункти замість системних «Новий» і «Зберегти» (⌘N звільняємо для «Додати вакансію»)
+        CommandGroup(replacing: .newItem) {
+            Button("Новий каталог") {
+                viewModel.requestNewCatalog()
+            }
+            .keyboardShortcut("n", modifiers: [.command, .shift])
+            .disabled(viewModel.isFormPresented)
+
+            Button("Відкрити…") {
+                viewModel.requestOpen()
+            }
+            .keyboardShortcut("o", modifiers: .command)
+            .disabled(viewModel.isFormPresented)
+        }
+
+        CommandGroup(replacing: .saveItem) {
+            Button("Зберегти") {
+                viewModel.save()
+            }
+            .keyboardShortcut("s", modifiers: .command)
+            .disabled(viewModel.isFormPresented)
+
+            Button("Зберегти як…") {
+                viewModel.requestSaveAs()
+            }
+            .keyboardShortcut("s", modifiers: [.command, .shift])
+            .disabled(viewModel.isFormPresented)
+        }
 
         CommandMenu("Вакансія") {
             Button("Додати вакансію…") {

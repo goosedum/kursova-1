@@ -107,13 +107,28 @@ enum VacancyError: LocalizedError, Equatable {
         }
     }
 
-    /// Текст алерта: що сталося і що робити. Для порожнього каталогу — лише порада (заголовок уже все каже).
+    /// Текст алерта: що сталося і що робити. Для порожнього каталогу — лише порада (заголовок уже все каже);
+    /// для помилки відкриття файлу — ще й нагадування, що відкритий каталог не змінився (D-23, екран S-15).
     var alertMessage: String {
         let suggestion = recoverySuggestion ?? ""
         if self == .emptyCatalog {
             return suggestion
         }
-        return (errorDescription ?? "") + " " + suggestion
+        let message = (errorDescription ?? "") + " " + suggestion
+        if isOpenError {
+            return message + " Каталог не змінено."
+        }
+        return message
+    }
+
+    /// Чи це помилка відкриття файлу (тоді `load(from:)` не змінює каталог).
+    private var isOpenError: Bool {
+        switch self {
+        case .fileNotFound, .fileReadFailed, .invalidFieldCount, .invalidNumber, .unknownValue, .invalidData:
+            return true
+        default:
+            return false
+        }
     }
 
     /// Що зробити користувачу.
@@ -132,7 +147,7 @@ enum VacancyError: LocalizedError, Equatable {
         case .unknownValue:
             return "Рівень: Intern, Junior, Middle, Senior або Lead. Формат: Office, Remote або Hybrid."
         case .invalidData:
-            return "Виправте рядок у файлі й відкрийте його знову. Каталог не змінено."
+            return "Виправте рядок у файлі й відкрийте його знову."
         case .emptyField, .fieldTooLong, .forbiddenCharacter:
             return "Виправте поле й збережіть ще раз."
         case .salaryOutOfRange, .minSalaryGreaterThanMax:

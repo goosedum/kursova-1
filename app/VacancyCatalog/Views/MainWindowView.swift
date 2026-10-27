@@ -1,8 +1,9 @@
 //
 //  MainWindowView.swift
-//  Головне вікно: сайдбар, таблиця вакансій (або порожній стан), панель деталей, рядок стану, форма, алерти.
+//  Головне вікно: сайдбар, таблиця вакансій (або порожній стан), панель деталей, рядок стану, форма, файли, алерти.
 //
 
+import AppKit
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -18,8 +19,6 @@ struct MainWindowView: View {
 
     /// Чи показана панель деталей праворуч (за замовчуванням схована, D-30).
     @State private var isInspectorPresented = false
-    /// Чи показане вікно вибору файлу «Відкрити…».
-    @State private var isFileImporterPresented = false
 
     var body: some View {
         NavigationSplitView {
@@ -44,6 +43,7 @@ struct MainWindowView: View {
                     .inspectorColumnWidth(300)
             }
             .toolbar {
+                fileButtons
                 vacancyButtons
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -57,7 +57,8 @@ struct MainWindowView: View {
         }
         .navigationTitle("Каталог вакансій")
         .navigationSubtitle(viewModel.windowSubtitle)
-        .fileImporter(isPresented: $isFileImporterPresented, allowedContentTypes: [.plainText]) { result in
+        // «Відкрити…» — системне вікно вибору текстового файлу (UC-02)
+        .fileImporter(isPresented: $viewModel.isOpenPanelPresented, allowedContentTypes: [.plainText]) { result in
             switch result {
             case .success(let url):
                 viewModel.open(url: url)
@@ -65,6 +66,27 @@ struct MainWindowView: View {
                 // Вікно вибору файлу не відкрилося — нічого не змінюємо
                 break
             }
+        }
+        // «Зберегти як…» — коли ViewModel просить вікно вибору місця (UC-04)
+        .onChange(of: viewModel.isSavePanelPresented) {
+            if viewModel.isSavePanelPresented {
+                showSavePanel()
+            }
+        }
+        // «Зберегти зміни в каталозі?» перед «Відкрити», «Новий каталог», «Демо-дані» (UC-22, D-24)
+        .alert("Зберегти зміни в каталозі?", isPresented: $viewModel.isUnsavedChangesAlertPresented) {
+            Button("Зберегти") {
+                viewModel.saveChangesAndContinue()
+            }
+            .keyboardShortcut(.defaultAction)
+            Button("Не зберігати", role: .destructive) {
+                viewModel.discardChangesAndContinue()
+            }
+            Button("Скасувати", role: .cancel) {
+                viewModel.cancelPendingAction()
+            }
+        } message: {
+            Text(viewModel.unsavedChangesMessage)
         }
         // Форма вакансії — лист поверх вікна (UC-07, UC-08)
         .sheet(isPresented: $viewModel.isFormPresented) {
@@ -92,13 +114,29 @@ struct MainWindowView: View {
     @ViewBuilder
     private var content: some View {
         if viewModel.isCatalogEmpty {
-            EmptyStateView(viewModel: viewModel, openFile: {
-                isFileImporterPresented = true
-            })
+            EmptyStateView(viewModel: viewModel)
         } else if viewModel.isNothingFound {
             NothingFoundView(viewModel: viewModel)
         } else {
             VacancyTableView(viewModel: viewModel)
+        }
+    }
+
+    /// Кнопки файлу на панелі інструментів: «Відкрити» і «Зберегти» (Figma: `Organism/Toolbar`).
+    private var fileButtons: some ToolbarContent {
+        ToolbarItemGroup {
+            Button {
+                viewModel.requestOpen()
+            } label: {
+                Label("Відкрити", systemImage: "folder")
+            }
+            .help("Відкрити каталог з файлу (⌘O)")
+            Button {
+                viewModel.save()
+            } label: {
+                Label("Зберегти", systemImage: "square.and.arrow.down")
+            }
+            .help("Зберегти каталог у файл (⌘S)")
         }
     }
 
@@ -142,6 +180,36 @@ struct MainWindowView: View {
                 Label("Аналіз", systemImage: "chart.bar.doc.horizontal")
             }
             .help("Функції 1–6 (⌘1…⌘6)")
+        }
+    }
+
+    /// Вікно «Зберегти як…».
+    ///
+    /// SwiftUI має готове вікно збереження лише для «документів», а наш каталог записує у файл `VacancyFileWriter`
+    /// (оператор `<<`), тому тут — системне вікно AppKit `NSSavePanel`: воно лише питає, куди зберегти.
+    /// Вікно показується листом, прикріпленим до вікна каталогу (`beginSheetModal`), — тож воно завжди з'являється
+    /// поверх каталогу, а не окремо деінде на екрані. Коли користувач натисне «Зберегти» або «Скасувати»,
+    /// виконується блок `{ response in … }`.
+    private func showSavePanel() {
+        let panel = NSSavePanel()
+        panel.title = "Зберегти каталог"
+        panel.allowedContentTypes = [.plainText]
+        panel.nameFieldStringValue = viewModel.currentFileURL?.lastPathComponent ?? "vacancies.txt"
+
+        // mainWindow — вікно каталогу, навіть коли на ньому ще висить алерт «Зберегти зміни?» (той — keyWindow)
+        guard let window = NSApp.mainWindow ?? NSApp.keyWindow else {
+            // Вікна немає (програму згорнуто) — нічого не показуємо, щоб наступне ⌘S спрацювало знову
+            viewModel.isSavePanelPresented = false
+            viewModel.cancelPendingAction()
+            return
+        }
+        panel.beginSheetModal(for: window) { response in
+            viewModel.isSavePanelPresented = false
+            if response == .OK, let url = panel.url {
+                viewModel.saveAs(url: url)
+            } else {
+                viewModel.cancelPendingAction()
+            }
         }
     }
 

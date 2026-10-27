@@ -12,8 +12,6 @@ struct EmptyStateView: View {
 
     /// Стан вікна.
     let viewModel: CatalogViewModel
-    /// Що зробити для «Відкрити файл…» — вікно вибору файлу показує головне вікно.
-    let openFile: () -> Void
 
     var body: some View {
         ContentUnavailableView {
@@ -24,7 +22,7 @@ struct EmptyStateView: View {
         } actions: {
             HStack(spacing: AppSpacing.s) {
                 Button("Відкрити файл…") {
-                    openFile()
+                    viewModel.requestOpen()
                 }
                 .buttonStyle(.borderedProminent)
                 .help("Відкрити каталог з текстового файлу (⌘O)")
@@ -33,7 +31,7 @@ struct EmptyStateView: View {
                 }
                 .help("Додати вакансію вручну (⌘N)")
                 Button("Демо-дані") {
-                    viewModel.loadDemoData()
+                    viewModel.requestDemoData()
                 }
                 .buttonStyle(.link)
                 .help("Відкрити вбудований каталог з 28 вакансій")

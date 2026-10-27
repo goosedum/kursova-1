@@ -414,6 +414,127 @@ struct CatalogViewModelTests {
         #expect(viewModel.result == nil)
     }
 
+    // MARK: - «Зберегти зміни в каталозі?» (UC-22, D-24)
+
+    /// Стан вікна з каталогом, збереженим у тимчасовий файл, і однією незбереженою зміною (видалено першу вакансію).
+    private func makeChangedViewModel() throws -> CatalogViewModel {
+        let viewModel = try makeViewModel()
+        viewModel.saveAs(url: TestFiles.temporaryURL())
+        viewModel.selectedVacancyIDs = [viewModel.catalog.vacancies[0].id]
+        viewModel.deleteSelected()
+        return viewModel
+    }
+
+    @Test("Без незбережених змін «Новий каталог» і «Відкрити…» виконуються одразу, без питання")
+    func requestsWithoutChanges() throws {
+        let viewModel = try makeViewModel()
+        viewModel.requestOpen()
+        #expect(viewModel.isOpenPanelPresented)
+        #expect(viewModel.isUnsavedChangesAlertPresented == false)
+
+        viewModel.requestNewCatalog()
+        #expect(viewModel.catalog.vacancies.isEmpty)
+    }
+
+    @Test("Є зміни → питання; «Скасувати» нічого не змінює")
+    func unsavedChangesCancel() throws {
+        let viewModel = try makeChangedViewModel()
+        viewModel.requestNewCatalog()
+        #expect(viewModel.isUnsavedChangesAlertPresented)
+        #expect(viewModel.pendingAction == .newCatalog)
+        #expect(viewModel.catalog.vacancies.count == 27)
+        #expect(viewModel.unsavedChangesMessage.hasPrefix("Якщо не зберегти, зміни у «vacancies-"))
+
+        viewModel.cancelPendingAction()
+        #expect(viewModel.pendingAction == nil)
+        #expect(viewModel.catalog.vacancies.count == 27)
+        #expect(viewModel.hasUnsavedChanges)
+    }
+
+    @Test("«Не зберігати» — дія виконується, зміни відкинуто")
+    func unsavedChangesDiscard() throws {
+        let viewModel = try makeChangedViewModel()
+        let file = try #require(viewModel.currentFileURL)
+        viewModel.requestNewCatalog()
+        viewModel.discardChangesAndContinue()
+
+        #expect(viewModel.catalog.vacancies.isEmpty)
+        #expect(viewModel.pendingAction == nil)
+        // У файлі лишилися всі 28 вакансій — видалення не збережено
+        #expect(try TestFiles.readVacancies(from: file).count == 28)
+    }
+
+    @Test("«Зберегти» з поточним файлом — зберігає, потім виконує дію («Відкрити…»)")
+    func unsavedChangesSaveToCurrentFile() throws {
+        let viewModel = try makeChangedViewModel()
+        let file = try #require(viewModel.currentFileURL)
+        viewModel.requestOpen()
+        #expect(viewModel.isOpenPanelPresented == false)
+
+        viewModel.saveChangesAndContinue()
+        #expect(viewModel.hasUnsavedChanges == false)
+        #expect(try TestFiles.readVacancies(from: file).count == 27)
+        #expect(viewModel.isOpenPanelPresented)
+        #expect(viewModel.pendingAction == nil)
+    }
+
+    @Test("«Зберегти» без файлу — спершу «Зберегти як…», після вибору місця виконує дію; скасування — нічого")
+    func unsavedChangesSaveWithoutFile() throws {
+        let viewModel = CatalogViewModel()
+        viewModel.loadDemoData()
+        viewModel.selectedVacancyIDs = [viewModel.catalog.vacancies[0].id]
+        viewModel.deleteSelected()
+
+        // Скасували вибір місця — каталог і зміни лишилися
+        viewModel.requestNewCatalog()
+        viewModel.saveChangesAndContinue()
+        #expect(viewModel.isSavePanelPresented)
+        viewModel.cancelPendingAction()
+        #expect(viewModel.catalog.vacancies.count == 27)
+
+        // Вибрали місце — збережено, потім новий каталог
+        viewModel.requestNewCatalog()
+        viewModel.saveChangesAndContinue()
+        let url = TestFiles.temporaryURL()
+        viewModel.saveAs(url: url)
+        #expect(try TestFiles.readVacancies(from: url).count == 27)
+        #expect(viewModel.catalog.vacancies.isEmpty)
+        #expect(viewModel.pendingAction == nil)
+    }
+
+    @Test("«Зберегти як…» не вдалося — відкладена дія скасована і не виконається пізніше")
+    func failedSaveAsCancelsPendingAction() throws {
+        let viewModel = CatalogViewModel()
+        viewModel.loadDemoData()
+        viewModel.selectedVacancyIDs = [viewModel.catalog.vacancies[0].id]
+        viewModel.deleteSelected()
+
+        viewModel.requestNewCatalog()
+        viewModel.saveChangesAndContinue()
+        let folder = FileManager.default.temporaryDirectory.appending(path: "no-such-folder-\(UUID().uuidString)")
+        viewModel.saveAs(url: folder.appending(path: "catalog.txt"))
+        #expect(viewModel.errorAlert == VacancyError.fileWriteFailed(path: "catalog.txt"))
+        #expect(viewModel.pendingAction == nil)
+        #expect(viewModel.catalog.vacancies.count == 27)
+
+        // Пізніше вдале «Зберегти як…» не очищує каталог несподівано
+        viewModel.errorAlert = nil
+        viewModel.saveAs(url: TestFiles.temporaryURL())
+        #expect(viewModel.catalog.vacancies.count == 27)
+        #expect(viewModel.hasUnsavedChanges == false)
+    }
+
+    @Test("«Демо-дані» при незбережених змінах теж питає")
+    func demoDataAsksAboutChanges() throws {
+        let viewModel = try makeChangedViewModel()
+        viewModel.requestDemoData()
+        #expect(viewModel.isUnsavedChangesAlertPresented)
+        #expect(viewModel.pendingAction == .demoData)
+        viewModel.discardChangesAndContinue()
+        #expect(viewModel.catalog.vacancies.count == 28)
+        #expect(viewModel.catalogName == "Демо-дані")
+    }
+
     @Test("Помилка запису → алерт fileWriteFailed, ознака змін лишається")
     func saveErrorKeepsUnsavedFlag() throws {
         let viewModel = try makeViewModel()

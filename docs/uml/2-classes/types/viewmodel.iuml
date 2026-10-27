@@ -13,6 +13,9 @@ package "ViewModel" {
     + errorAlert : VacancyError?
     + isDeleteConfirmationPresented : Bool
     + isSavePanelPresented : Bool
+    + isOpenPanelPresented : Bool
+    + isUnsavedChangesAlertPresented : Bool
+    + pendingAction : PendingFileAction? {readOnly}
     - editingOriginal : Vacancy?
     - isDemoCatalog : Bool {readOnly}
     + /displayedGroups : [VacancyGroup]
@@ -22,6 +25,7 @@ package "ViewModel" {
     + /isEditingExisting : Bool
     + /deleteConfirmationTitle : String
     + /deleteConfirmationMessage : String
+    + /unsavedChangesMessage : String
     + /catalogName : String
     + /windowSubtitle : String
     + /statusText : String
@@ -42,6 +46,13 @@ package "ViewModel" {
     + saveDraft()
     + cancelEditing()
     + newCatalog()
+    + requestNewCatalog()
+    + requestOpen()
+    + requestDemoData()
+    + requestSaveAs()
+    + saveChangesAndContinue()
+    + discardChangesAndContinue()
+    + cancelPendingAction()
     + open(url: URL)
     + save()
     + saveAs(url: URL)
@@ -50,6 +61,14 @@ package "ViewModel" {
     - refreshResult()
     - withAccess(to url: URL, _ action: () throws -> Void)
     - showError(_ error: Error)
+    - request(_ action: PendingFileAction)
+    - continuePendingAction()
+    - perform(_ action: PendingFileAction)
     - lowercasedFirstLetter(_ text: String) : String
+  }
+  enum PendingFileAction <<enumeration>> {
+    newCatalog
+    openFile
+    demoData
   }
 }

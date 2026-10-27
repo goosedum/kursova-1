@@ -29,4 +29,5 @@ VacancyCatalog *-- "0..*" Vacancy
 VacancyCatalog ..> VacancyFileReader : load
 VacancyCatalog ..> VacancyFileWriter : save
 VacancyCatalog ..> VacancyError : <<throws>>
+CatalogViewModel --> "0..1" PendingFileAction : pendingAction
 @enduml

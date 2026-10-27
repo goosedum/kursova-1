@@ -36,6 +36,11 @@ struct VacancyErrorTests {
                 == "Не вдалося відкрити файл")
         #expect(VacancyError.fileWriteFailed(path: "a.txt").alertTitle == "Не вдалося зберегти файл")
         #expect(VacancyError.emptyField(name: "Компанія").alertTitle == "Неправильні дані вакансії")
+        // Помилка відкриття файлу нагадує, що каталог не змінено (S-15, D-23); інші — ні
+        let fileError = VacancyError.invalidNumber(line: 6, field: "мінімальна зарплата", value: "abc")
+        #expect(fileError.alertMessage.hasPrefix("Рядок 6: «abc» не є числом (мінімальна зарплата). "))
+        #expect(fileError.alertMessage.hasSuffix(" Каталог не змінено."))
+        #expect(range.alertMessage.hasSuffix("Каталог не змінено.") == false)
         // Для порожнього каталогу заголовок не повторюється в тексті
         #expect(VacancyError.emptyCatalog.alertTitle == "Каталог порожній")
         #expect(VacancyError.emptyCatalog.alertMessage == "Відкрийте файл або додайте вакансію.")

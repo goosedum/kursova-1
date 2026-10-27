@@ -54,6 +54,12 @@ class CatalogViewModel {
     var isDeleteConfirmationPresented = false
     /// Чи показати вікно «Зберегти як…» (поточного файлу ще немає).
     var isSavePanelPresented = false
+    /// Чи показати вікно вибору файлу «Відкрити…».
+    var isOpenPanelPresented = false
+    /// Чи показати питання «Зберегти зміни в каталозі?» (D-24).
+    var isUnsavedChangesAlertPresented = false
+    /// Дія, що чекає на відповідь у питанні «Зберегти зміни?»; `nil` — нічого не чекає.
+    private(set) var pendingAction: PendingFileAction?
 
     // MARK: - Що показати
 
@@ -100,6 +106,11 @@ class CatalogViewModel {
         let count = TextFormat.count(selected.count, one: "вибрану вакансію", few: "вибрані вакансії",
                                      many: "вибраних вакансій")
         return "Видалити \(count)?"
+    }
+
+    /// Пояснення під питанням «Зберегти зміни в каталозі?» (Figma S-18b).
+    var unsavedChangesMessage: String {
+        return "Якщо не зберегти, зміни у «\(catalogName)» буде втрачено."
     }
 
     /// Пояснення під питанням про видалення (Figma S-18.1, S-18.2).
@@ -355,6 +366,51 @@ class CatalogViewModel {
 
     // MARK: - Файли
 
+    /// «Новий каталог» з меню: спершу питає про незбережені зміни (D-24).
+    func requestNewCatalog() {
+        request(.newCatalog)
+    }
+
+    /// «Відкрити…» з меню, панелі або порожнього стану: спершу питає про незбережені зміни (D-24).
+    func requestOpen() {
+        request(.openFile)
+    }
+
+    /// «Демо-дані» з порожнього стану: спершу питає про незбережені зміни (D-24).
+    func requestDemoData() {
+        request(.demoData)
+    }
+
+    /// «Зберегти як…» (⇧⌘S): показати вікно вибору місця.
+    func requestSaveAs() {
+        isSavePanelPresented = true
+    }
+
+    /// «Зберегти» у питанні «Зберегти зміни?»: зберігає каталог, потім виконує відкладену дію.
+    /// Якщо поточного файлу немає — спершу «Зберегти як…»; дія виконається після вибору місця (`saveAs`).
+    func saveChangesAndContinue() {
+        if currentFileURL == nil {
+            isSavePanelPresented = true
+            return
+        }
+        if save() {
+            continuePendingAction()
+        } else {
+            // Зберегти не вдалося — показано алерт, відкладену дію скасовуємо, щоб не втратити зміни
+            pendingAction = nil
+        }
+    }
+
+    /// «Не зберігати» у питанні «Зберегти зміни?»: виконує відкладену дію без збереження.
+    func discardChangesAndContinue() {
+        continuePendingAction()
+    }
+
+    /// «Скасувати» у питанні «Зберегти зміни?» або у вікні «Зберегти як…»: нічого не робити.
+    func cancelPendingAction() {
+        pendingAction = nil
+    }
+
     /// «Новий каталог»: порожній каталог без файлу.
     func newCatalog() {
         catalog.removeAll()
@@ -378,24 +434,35 @@ class CatalogViewModel {
     }
 
     /// «Зберегти»: у поточний файл. Якщо файлу ще немає — показати «Зберегти як…».
-    func save() {
+    ///
+    /// - Returns: `true`, якщо каталог записано у файл.
+    @discardableResult
+    func save() -> Bool {
         guard let url = currentFileURL else {
             isSavePanelPresented = true
-            return
+            return false
         }
-        withAccess(to: url) {
+        return withAccess(to: url) {
             try catalog.save(to: url)
             hasUnsavedChanges = false
         }
     }
 
     /// «Зберегти як…»: у вибраний файл, який стає поточним.
+    ///
+    /// Якщо «Зберегти як…» відкрили з питання «Зберегти зміни?», після вдалого запису виконується відкладена дія,
+    /// а після невдалого — скасовується (щоб не виконалась колись пізніше, несподівано).
     func saveAs(url: URL) {
-        withAccess(to: url) {
+        let isSaved = withAccess(to: url) {
             try catalog.save(to: url)
             currentFileURL = url
             isDemoCatalog = false
             hasUnsavedChanges = false
+        }
+        if isSaved {
+            continuePendingAction()
+        } else {
+            pendingAction = nil
         }
     }
 
@@ -421,6 +488,37 @@ class CatalogViewModel {
     }
 
     // MARK: - Допоміжні методи
+
+    /// Виконує дію одразу або, якщо є незбережені зміни, відкладає її і питає «Зберегти зміни?» (D-24).
+    private func request(_ action: PendingFileAction) {
+        if hasUnsavedChanges {
+            pendingAction = action
+            isUnsavedChangesAlertPresented = true
+        } else {
+            perform(action)
+        }
+    }
+
+    /// Виконує відкладену дію (якщо вона є) і забуває її.
+    private func continuePendingAction() {
+        guard let action = pendingAction else {
+            return
+        }
+        pendingAction = nil
+        perform(action)
+    }
+
+    /// Сама дія з файлом.
+    private func perform(_ action: PendingFileAction) {
+        switch action {
+        case .newCatalog:
+            newCatalog()
+        case .openFile:
+            isOpenPanelPresented = true
+        case .demoData:
+            loadDemoData()
+        }
+    }
 
     /// «За спаданням …» → «за спаданням …» (для середини речення в рядку стану).
     private func lowercasedFirstLetter(_ text: String) -> String {
@@ -450,12 +548,13 @@ class CatalogViewModel {
         }
     }
 
-    /// Виконує дію з файлом і ловить її помилку.
+    /// Виконує дію з файлом і ловить її помилку. Повертає `true`, якщо дія виконалась без помилки.
     ///
     /// Програма працює в пісочниці (App Sandbox): файл, вибраний у вікні «Відкрити» чи «Зберегти», доступний лише
     /// між `startAccessingSecurityScopedResource()` і `stopAccessingSecurityScopedResource()`.
     /// `defer` виконується наприкінці методу за будь-якого виходу — і після успіху, і після помилки.
-    private func withAccess(to url: URL, _ action: () throws -> Void) {
+    @discardableResult
+    private func withAccess(to url: URL, _ action: () throws -> Void) -> Bool {
         let hasAccess = url.startAccessingSecurityScopedResource()
         defer {
             if hasAccess {
@@ -464,8 +563,10 @@ class CatalogViewModel {
         }
         do {
             try action()
+            return true
         } catch {
             showError(error)
+            return false
         }
     }
 
