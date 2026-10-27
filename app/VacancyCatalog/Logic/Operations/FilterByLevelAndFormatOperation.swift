@@ -17,6 +17,7 @@ class FilterByLevelAndFormatOperation: CatalogOperation {
     /// Потрібний формат роботи.
     var format = WorkFormat.remote
 
+    /// Функція 3; за замовчуванням Middle + Віддалено (як на екрані S-05). Назву, іконку й підказку передає базовому класу.
     init() {
         super.init(title: "Рівень досвіду і формат роботи",
                    shortTitle: "Рівень і формат",

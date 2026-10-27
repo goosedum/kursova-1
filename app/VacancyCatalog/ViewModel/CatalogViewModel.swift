@@ -222,8 +222,9 @@ class CatalogViewModel {
 
     /// Вибір функції в сайдбарі. Якщо параметри вже задані (ф.3–6), результат показується одразу;
     /// ф.1 і ф.2 спершу чекають на введення в панелі параметрів.
+    /// Порожній каталог — будь-яка функція виконується одразу, щоб відразу з'явився алерт «Каталог порожній» (D-38).
     func select(_ operation: CatalogOperation) {
-        if operation.canExecute {
+        if operation.canExecute || catalog.vacancies.isEmpty {
             run(operation)
         } else {
             selectedOperation = operation

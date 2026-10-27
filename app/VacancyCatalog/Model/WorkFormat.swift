@@ -10,8 +10,11 @@ import Foundation
 /// `rawValue` — англійський ключ, який записується у файл (рішення D-22), `title` — назва в інтерфейсі,
 /// `systemImage` — назва іконки SF Symbols (див. `docs/design/icons.md`).
 enum WorkFormat: String, CaseIterable, Identifiable {
+    /// Робота в офісі компанії.
     case office = "Office"
+    /// Віддалена робота.
     case remote = "Remote"
+    /// Частково в офісі, частково віддалено.
     case hybrid = "Hybrid"
 
     /// Ідентифікатор для списків SwiftUI — збігається з ключем у файлі.

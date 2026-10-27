@@ -32,7 +32,9 @@ package "ViewModel" {
     + /highlightedTechnology : String
     + /isCatalogEmpty : Bool
     + /isNothingFound : Bool
+    + /averageColumnTitle : String
     --
+    + number(of operation: CatalogOperation?) : Int
     + select(_ operation: CatalogOperation)
     + runSelectedOperation()
     + findVacancies(withTechnology: String)
@@ -54,12 +56,12 @@ package "ViewModel" {
     + discardChangesAndContinue()
     + cancelPendingAction()
     + open(url: URL)
-    + save()
+    + save() : Bool
     + saveAs(url: URL)
     + loadDemoData()
     - closeForm()
     - refreshResult()
-    - withAccess(to url: URL, _ action: () throws -> Void)
+    - withAccess(to url: URL, _ action: () throws -> Void) : Bool
     - showError(_ error: Error)
     - request(_ action: PendingFileAction)
     - continuePendingAction()

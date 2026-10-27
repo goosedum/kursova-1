@@ -41,6 +41,7 @@ package "Model" {
     senior = "Senior"
     lead = "Lead"
     --
+    + /id : String
     + /title : String
     + /order : Int
   }
@@ -49,6 +50,7 @@ package "Model" {
     remote = "Remote"
     hybrid = "Hybrid"
     --
+    + /id : String
     + /title : String
     + /systemImage : String
   }
@@ -73,6 +75,7 @@ package "Model" {
     + /recoverySuggestion : String?
     + /alertTitle : String
     + /alertMessage : String
+    - /isOpenError : Bool
   }
   interface LocalizedError <<protocol>>
   class VacancyGroup <<struct>> {

@@ -21,6 +21,7 @@ package "Logic" {
     + companyQuery : String
     + /canExecute : Bool {override}
     --
+    + init()
     + execute(on:) throws : OperationResult
     - text(_:contains:) : Bool
     - describe(title:company:) : String
@@ -29,22 +30,27 @@ package "Logic" {
     + technology : String
     + /canExecute : Bool {override}
     --
+    + init()
     + execute(on:) throws : OperationResult
   }
   class FilterByLevelAndFormatOperation {
     + level : ExperienceLevel
     + format : WorkFormat
+    + init()
     + execute(on:) throws : OperationResult
   }
   class SortByAverageSalaryOperation {
     + ascending : Bool
+    + init()
     + execute(on:) throws : OperationResult
   }
   class SalaryRangeExtremesOperation {
+    + init()
     + findExtremes(in catalog: VacancyCatalog) throws : SalaryRangeExtremes
     + execute(on:) throws : OperationResult
   }
   class GroupBySpecializationOperation {
+    + init()
     + execute(on:) throws : OperationResult
   }
   class OperationResult <<struct>> {

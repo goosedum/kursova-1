@@ -14,6 +14,7 @@ import Observation
 @Observable
 class GroupBySpecializationOperation: CatalogOperation {
 
+    /// Функція 6 (параметрів немає). Назву, іконку й підказку передає базовому класу.
     init() {
         super.init(title: "Групування за спеціалізацією",
                    shortTitle: "Групи спеціалізацій",

@@ -13,6 +13,7 @@ import Observation
 @Observable
 class SalaryRangeExtremesOperation: CatalogOperation {
 
+    /// Функція 5 (параметрів немає). Назву, іконку й підказку передає базовому класу.
     init() {
         super.init(title: "Найменший і найбільший діапазон зарплати",
                    shortTitle: "Діапазон зарплати",

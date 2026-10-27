@@ -16,6 +16,7 @@ class SearchByTechnologyOperation: CatalogOperation {
     /// Назва технології, яку шукаємо.
     var technology = ""
 
+    /// Функція 2 з порожнім полем технології. Назву, іконку й підказку передає базовому класу.
     init() {
         super.init(title: "Пошук за технологією",
                    shortTitle: "Технологія",

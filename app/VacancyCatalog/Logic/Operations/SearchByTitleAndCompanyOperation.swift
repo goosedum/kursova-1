@@ -18,6 +18,7 @@ class SearchByTitleAndCompanyOperation: CatalogOperation {
     /// Текст, який має містити назва компанії.
     var companyQuery = ""
 
+    /// Функція 1 з порожніми полями посади й компанії. Назву, іконку й підказку передає базовому класу.
     init() {
         super.init(title: "Пошук за посадою і компанією",
                    shortTitle: "Посада і компанія",

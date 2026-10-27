@@ -10,10 +10,15 @@ import Foundation
 /// `rawValue` — англійський ключ, який записується у файл (рішення D-22), `title` — назва в інтерфейсі.
 /// Рівні впорядковані: їх можна порівнювати за `order` (Intern < Junior < Middle < Senior < Lead).
 enum ExperienceLevel: String, CaseIterable, Identifiable {
+    /// Стажер — без досвіду, навчання на проєкті.
     case intern = "Intern"
+    /// Молодший спеціаліст — до 1–2 років досвіду.
     case junior = "Junior"
+    /// Спеціаліст середнього рівня — самостійно виконує задачі.
     case middle = "Middle"
+    /// Старший спеціаліст — ухвалює технічні рішення, навчає інших.
     case senior = "Senior"
+    /// Керівник команди або напряму.
     case lead = "Lead"
 
     /// Ідентифікатор для списків SwiftUI — збігається з ключем у файлі.

@@ -16,6 +16,7 @@ class SortByAverageSalaryOperation: CatalogOperation {
     /// `true` — від меншої до більшої; `false` (за замовчуванням) — від більшої до меншої.
     var ascending = false
 
+    /// Функція 4; за замовчуванням — за спаданням (D-11). Назву, іконку й підказку передає базовому класу.
     init() {
         super.init(title: "Сортування за середньою зарплатою",
                    shortTitle: "Сортування за ЗП",
