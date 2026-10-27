@@ -1,4 +1,4 @@
-@startuml use-cases-vacancies
+@startuml
 ' Діаграма прецедентів — робота з вакансіями (крок 3.1). Джерело — docs/analysis/04-use-cases.md, розділи 3–4.
 !pragma layout smetana
 skinparam monochrome true

@@ -1,0 +1,15 @@
+' Шар Logic — каталог вакансій (сховище з перевіркою). Підключається з діаграм у docs/uml/2-classes (крок 3.2). Джерело — .claude/plan/02-architecture.md §3.
+package "Logic" {
+  class VacancyCatalog {
+    + vacancies : [Vacancy] {readOnly}
+    + /allTechnologies : [String]
+    + /allSpecializations : [String]
+    --
+    + add(_ vacancy: Vacancy) throws
+    + replace(_ old: Vacancy, with new: Vacancy) throws
+    + remove(_ vacancy: Vacancy)
+    + removeAll()
+    + load(from url: URL) throws
+    + save(to url: URL) throws
+  }
+}

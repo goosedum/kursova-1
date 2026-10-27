@@ -1,6 +1,6 @@
-@startuml use-cases
+@startuml
 ' Діаграма прецедентів — загальна (крок 3.1). Джерело — docs/analysis/04-use-cases.md, розділ 2.
-' Зв'язки «include»/«extend» — на детальних діаграмах use-cases-files, use-cases-vacancies, use-cases-analysis.
+' Зв'язки «include»/«extend» — на детальних діаграмах 2-files, 3-vacancies, 4-analysis-and-help.
 !pragma layout smetana
 skinparam monochrome true
 skinparam shadowing false

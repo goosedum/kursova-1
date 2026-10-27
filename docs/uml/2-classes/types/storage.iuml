@@ -1,0 +1,19 @@
+' Шар Storage — файли. Підключається з діаграм у docs/uml/2-classes (крок 3.2). Джерело — .claude/plan/02-architecture.md §3.
+package "Storage" {
+  class VacancyFileReader {
+    - lines : [String]
+    - index : Int
+    + currentLineNumber : Int {readOnly}
+    --
+    + init(url: URL) throws
+    + {static} >> (reader: VacancyFileReader,\n  vacancy: Vacancy) throws : Bool
+  }
+  class VacancyFileWriter {
+    - url : URL
+    - buffer : String
+    --
+    + init(url: URL)
+    + {static} << (writer: VacancyFileWriter,\n  vacancy: Vacancy) : VacancyFileWriter
+    + save() throws
+  }
+}

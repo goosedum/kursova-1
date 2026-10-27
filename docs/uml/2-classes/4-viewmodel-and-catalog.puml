@@ -1,0 +1,32 @@
+@startuml
+' Діаграма класів — стан вікна (CatalogViewModel) і каталог вакансій (VacancyCatalog) (крок 3.2).
+' Типи — types/viewmodel.iuml, types/catalog.iuml; типи з інших шарів — заглушки без полів і методів.
+!include types/style.iuml
+!include types/viewmodel.iuml
+!include types/catalog.iuml
+left to right direction
+package "Logic" {
+  abstract class CatalogOperation
+  class OperationResult <<struct>>
+}
+package "Model" {
+  class Vacancy
+  enum VacancyError <<enumeration>>
+}
+package "Storage" {
+  class VacancyFileReader
+  class VacancyFileWriter
+}
+
+CatalogViewModel o-- "1" VacancyCatalog
+CatalogViewModel o-- "6" CatalogOperation
+CatalogViewModel --> "0..1" OperationResult : result
+CatalogViewModel --> "0..1" Vacancy : editingDraft
+CatalogViewModel --> "0..1" VacancyError : errorAlert
+CatalogOperation ..> VacancyCatalog : execute(on:)
+CatalogOperation ..> OperationResult : <<create>>
+VacancyCatalog *-- "0..*" Vacancy
+VacancyCatalog ..> VacancyFileReader : load
+VacancyCatalog ..> VacancyFileWriter : save
+VacancyCatalog ..> VacancyError : <<throws>>
+@enduml

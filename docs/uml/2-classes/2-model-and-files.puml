@@ -1,0 +1,18 @@
+@startuml
+' Діаграма класів — модель даних і робота з файлами (крок 3.2). Типи — types/model.iuml, types/storage.iuml.
+!include types/style.iuml
+!include types/model.iuml
+!include types/storage.iuml
+left to right direction
+
+Vacancy --> "1" ExperienceLevel
+Vacancy --> "1" WorkFormat
+VacancyError ..|> LocalizedError
+Vacancy ..> VacancyError : <<throws>>\nvalidate()
+VacancyGroup o-- "0..*" Vacancy
+SalaryRangeExtremes o-- "1..*" Vacancy
+VacancyFileReader ..> Vacancy : >>
+VacancyFileWriter ..> Vacancy : <<
+VacancyFileReader ..> VacancyError : <<throws>>
+VacancyFileWriter ..> VacancyError : <<throws>>
+@enduml

@@ -1,0 +1,49 @@
+@startuml
+' Діаграма класів — огляд (крок 3.2): усі типи і зв'язки, без полів і методів.
+' Поля й методи — на детальних діаграмах 2-model-and-files, 3-functions-1-6, 4-viewmodel-and-catalog. Типи — types/*.iuml.
+' Щоб огляд читався, тут немає залежностей «throws» і зв'язків ViewModel → Vacancy (editingDraft), → VacancyError (errorAlert) —
+' вони на детальних діаграмах.
+!include types/style.iuml
+!include types/model.iuml
+!include types/storage.iuml
+!include types/catalog.iuml
+!include types/operations.iuml
+!include types/viewmodel.iuml
+hide members
+left to right direction
+skinparam nodesep 14
+skinparam ranksep 50
+
+' Model
+Vacancy --> "1" ExperienceLevel
+Vacancy --> "1" WorkFormat
+VacancyError ..|> LocalizedError
+VacancyGroup o-- "0..*" Vacancy
+SalaryRangeExtremes o-- "1..*" Vacancy
+
+' Storage
+VacancyFileReader ..> Vacancy : >>
+VacancyFileWriter ..> Vacancy : <<
+
+' Logic
+VacancyCatalog *-- "0..*" Vacancy
+VacancyCatalog ..> VacancyFileReader : load
+VacancyCatalog ..> VacancyFileWriter : save
+CatalogOperation <|-- SearchByTitleAndCompanyOperation
+CatalogOperation <|-- SearchByTechnologyOperation
+CatalogOperation <|-- FilterByLevelAndFormatOperation
+CatalogOperation <|-- SortByAverageSalaryOperation
+CatalogOperation <|-- SalaryRangeExtremesOperation
+CatalogOperation <|-- GroupBySpecializationOperation
+CatalogOperation ..> VacancyCatalog : execute(on:)
+CatalogOperation ..> OperationResult : <<create>>
+SortByAverageSalaryOperation ..> MergeSorter
+GroupBySpecializationOperation ..> MergeSorter
+SalaryRangeExtremesOperation ..> SalaryRangeExtremes
+OperationResult *-- "1..*" VacancyGroup
+
+' ViewModel
+CatalogViewModel o-- "1" VacancyCatalog
+CatalogViewModel o-- "6" CatalogOperation
+CatalogViewModel --> "0..1" OperationResult : result
+@enduml

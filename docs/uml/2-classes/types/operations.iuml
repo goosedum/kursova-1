@@ -1,0 +1,44 @@
+' Шар Logic — функції 1–6 (CatalogOperation і підкласи), сортування злиттям, результат. Підключається з діаграм у docs/uml/2-classes (крок 3.2). Джерело — .claude/plan/02-architecture.md §3.
+package "Logic" {
+  class "MergeSorter<Element>" as MergeSorter {
+    + sort(_ items: [Element],\n  by isOrderedBefore: (Element, Element) -> Bool) : [Element]
+    - merge(_ left: [Element], _ right: [Element],\n  by isOrderedBefore: (Element, Element) -> Bool) : [Element]
+  }
+  abstract class CatalogOperation {
+    + title : String
+    + systemImage : String
+    + helpText : String
+    --
+    + init(title: String, systemImage: String, helpText: String)
+    + {abstract} execute(on catalog: VacancyCatalog) throws : OperationResult
+  }
+  class SearchByTitleAndCompanyOperation {
+    + titleQuery : String
+    + companyQuery : String
+    + execute(on:) throws : OperationResult
+  }
+  class SearchByTechnologyOperation {
+    + technology : String
+    + execute(on:) throws : OperationResult
+  }
+  class FilterByLevelAndFormatOperation {
+    + level : ExperienceLevel
+    + format : WorkFormat
+    + execute(on:) throws : OperationResult
+  }
+  class SortByAverageSalaryOperation {
+    + ascending : Bool
+    + execute(on:) throws : OperationResult
+  }
+  class SalaryRangeExtremesOperation {
+    + execute(on:) throws : OperationResult
+  }
+  class GroupBySpecializationOperation {
+    + execute(on:) throws : OperationResult
+  }
+  class OperationResult <<struct>> {
+    + title : String
+    + summary : String
+    + groups : [VacancyGroup]
+  }
+}

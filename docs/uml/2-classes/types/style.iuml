@@ -1,0 +1,12 @@
+' Спільний стиль діаграм класів (крок 3.2). Діаграми: 2-classes/1-overview, 2-model-and-files, 3-functions-1-6, 4-viewmodel-and-catalog.
+' Видимість: + доступний у модулі (internal), - private; {readOnly} — private(set) або let; / — обчислювана властивість.
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam dpi 200
+skinparam packageStyle rectangle
+hide circle
+hide empty members

@@ -1,0 +1,70 @@
+' Шар Model — дані. Підключається з діаграм у docs/uml/2-classes (крок 3.2). Джерело — .claude/plan/02-architecture.md §3.
+package "Model" {
+  class Vacancy {
+    + id : UUID {readOnly}
+    + company : String
+    + title : String
+    + specialization : String
+    + experienceLevel : ExperienceLevel
+    + minSalary : Int
+    + maxSalary : Int
+    + workFormat : WorkFormat
+    + technologies : [String]
+    + /averageSalary : Double
+    + /salaryRange : Int
+    --
+    + init()
+    + init(company: String, title: String, specialization: String,\n  experienceLevel: ExperienceLevel, minSalary: Int, maxSalary: Int,\n  workFormat: WorkFormat, technologies: [String])
+    + init(copyOf other: Vacancy)
+    + deinit
+    + hasTechnology(_ name: String) : Bool
+    + validate() throws
+  }
+  enum ExperienceLevel <<enumeration>> {
+    intern = "Intern"
+    junior = "Junior"
+    middle = "Middle"
+    senior = "Senior"
+    lead = "Lead"
+    --
+    + /title : String
+    + /order : Int
+  }
+  enum WorkFormat <<enumeration>> {
+    office = "Office"
+    remote = "Remote"
+    hybrid = "Hybrid"
+    --
+    + /title : String
+    + /systemImage : String
+  }
+  enum VacancyError <<enumeration>> {
+    fileNotFound(path: String)
+    fileReadFailed(path: String)
+    fileWriteFailed(path: String)
+    invalidFieldCount(line: Int, found: Int)
+    invalidNumber(line: Int, field: String, value: String)
+    unknownValue(line: Int, field: String, value: String)
+    minSalaryGreaterThanMax(min: Int, max: Int)
+    salaryOutOfRange(value: Int)
+    emptyField(name: String)
+    fieldTooLong(name: String, limit: Int)
+    forbiddenCharacter(name: String, character: String)
+    noTechnologies
+    emptyCatalog
+    --
+    + /errorDescription : String?
+    + /recoverySuggestion : String?
+  }
+  interface LocalizedError <<protocol>>
+  class VacancyGroup <<struct>> {
+    + title : String {readOnly}
+    + vacancies : [Vacancy] {readOnly}
+  }
+  class SalaryRangeExtremes <<struct>> {
+    + minRange : Int
+    + minRangeVacancies : [Vacancy]
+    + maxRange : Int
+    + maxRangeVacancies : [Vacancy]
+  }
+}

@@ -1,0 +1,29 @@
+' Шар ViewModel — стан вікна. Підключається з діаграм у docs/uml/2-classes (крок 3.2). Джерело — .claude/plan/02-architecture.md §3.
+package "ViewModel" {
+  class CatalogViewModel {
+    + catalog : VacancyCatalog
+    + operations : [CatalogOperation]
+    + selectedOperation : CatalogOperation?
+    + result : OperationResult?
+    + selectedVacancyIDs : Set<UUID>
+    + editingDraft : Vacancy?
+    + isFormPresented : Bool
+    + currentFileURL : URL?
+    + hasUnsavedChanges : Bool
+    + errorAlert : VacancyError?
+    + isDeleteConfirmationPresented : Bool
+    --
+    + showAll()
+    + run(_ operation: CatalogOperation)
+    + newVacancy()
+    + editSelected()
+    + duplicateSelected()
+    + deleteSelected()
+    + saveDraft()
+    + newCatalog()
+    + open(url: URL)
+    + save()
+    + saveAs(url: URL)
+    + loadDemoData()
+  }
+}

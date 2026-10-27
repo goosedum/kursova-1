@@ -1,0 +1,29 @@
+@startuml
+' Діаграма класів — функції 1–6: базовий клас CatalogOperation, 6 підкласів, сортування злиттям (крок 3.2).
+' Типи — types/operations.iuml; типи з інших шарів — заглушки без полів і методів.
+!include types/style.iuml
+!include types/operations.iuml
+left to right direction
+package "Logic" {
+  class VacancyCatalog
+}
+package "Model" {
+  class VacancyGroup <<struct>>
+  class SalaryRangeExtremes <<struct>>
+  enum VacancyError <<enumeration>>
+}
+
+CatalogOperation <|-- SearchByTitleAndCompanyOperation
+CatalogOperation <|-- SearchByTechnologyOperation
+CatalogOperation <|-- FilterByLevelAndFormatOperation
+CatalogOperation <|-- SortByAverageSalaryOperation
+CatalogOperation <|-- SalaryRangeExtremesOperation
+CatalogOperation <|-- GroupBySpecializationOperation
+CatalogOperation ..> VacancyCatalog : execute(on:)
+CatalogOperation ..> OperationResult : <<create>>
+CatalogOperation ..> VacancyError : <<throws>>\nemptyCatalog
+SortByAverageSalaryOperation ..> MergeSorter
+GroupBySpecializationOperation ..> MergeSorter
+SalaryRangeExtremesOperation ..> SalaryRangeExtremes
+OperationResult *-- "1..*" VacancyGroup
+@enduml
