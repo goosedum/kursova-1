@@ -1,6 +1,12 @@
 ' Шар Model — дані. Підключається з діаграм у docs/uml/2-classes (крок 3.2). Джерело — .claude/plan/02-architecture.md §3.
 package "Model" {
   class Vacancy {
+    + {static} maxCompanyLength = 60
+    + {static} maxTitleLength = 80
+    + {static} maxSpecializationLength = 40
+    + {static} maxTechnologyCount = 15
+    + {static} maxTechnologyLength = 30
+    + {static} maxSalary = 100000
     + id : UUID {readOnly}
     + company : String
     + title : String
@@ -18,7 +24,10 @@ package "Model" {
     + init(copyOf other: Vacancy)
     + deinit
     + hasTechnology(_ name: String) : Bool
+    + normalize()
     + validate() throws
+    - checkText(_ value: String, name: String, limit: Int) throws
+    - cleanedTechnologies() : [String]
   }
   enum ExperienceLevel <<enumeration>> {
     intern = "Intern"
@@ -45,12 +54,14 @@ package "Model" {
     invalidFieldCount(line: Int, found: Int)
     invalidNumber(line: Int, field: String, value: String)
     unknownValue(line: Int, field: String, value: String)
+    invalidData(line: Int, details: String)
     minSalaryGreaterThanMax(min: Int, max: Int)
     salaryOutOfRange(value: Int)
     emptyField(name: String)
     fieldTooLong(name: String, limit: Int)
     forbiddenCharacter(name: String, character: String)
     noTechnologies
+    tooManyTechnologies(limit: Int)
     emptyCatalog
     --
     + /errorDescription : String?
@@ -60,6 +71,7 @@ package "Model" {
   class VacancyGroup <<struct>> {
     + title : String {readOnly}
     + vacancies : [Vacancy] {readOnly}
+    + /id : String
   }
   class SalaryRangeExtremes <<struct>> {
     + minRange : Int
