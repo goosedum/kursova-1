@@ -53,3 +53,13 @@ struct AnalysisMenuItems: View {
         return nil
     }
 }
+
+#Preview("AnalysisMenuItems") {
+    let viewModel = CatalogViewModel()
+    viewModel.loadDemoData()
+    return Menu("Аналіз") {
+        AnalysisMenuItems(viewModel: viewModel, showsShortcuts: true)
+    }
+    .fixedSize()
+    .padding()
+}

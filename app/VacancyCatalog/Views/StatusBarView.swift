@@ -42,3 +42,18 @@ struct StatusBarView: View {
         .background(.bar)
     }
 }
+
+#Preview("Усі зміни збережено") {
+    let viewModel = CatalogViewModel()
+    viewModel.loadDemoData()
+    return StatusBarView(viewModel: viewModel)
+        .frame(width: 900)
+}
+
+#Preview("Є незбережені зміни") {
+    let viewModel = CatalogViewModel()
+    viewModel.loadDemoData()
+    viewModel.hasUnsavedChanges = true
+    return StatusBarView(viewModel: viewModel)
+        .frame(width: 900)
+}

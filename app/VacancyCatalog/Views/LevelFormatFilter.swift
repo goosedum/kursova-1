@@ -47,3 +47,8 @@ struct LevelFormatFilter: View {
         }
     }
 }
+
+#Preview("LevelFormatFilter") {
+    LevelFormatFilter(operation: FilterByLevelAndFormatOperation(), onChange: {})
+        .padding()
+}

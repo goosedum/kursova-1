@@ -30,3 +30,9 @@ struct TechnologyPicker: View {
         }
     }
 }
+
+#Preview("TechnologyPicker") {
+    TechnologyPicker(operation: SearchByTechnologyOperation(), technologies: ["Docker", "Git", "Swift", "SwiftUI"],
+                     onSubmit: {})
+        .padding()
+}

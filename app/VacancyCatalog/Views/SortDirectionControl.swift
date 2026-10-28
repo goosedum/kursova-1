@@ -50,3 +50,8 @@ struct SortDirectionControl: View {
         return "за спаданням (за замовчуванням)"
     }
 }
+
+#Preview("SortDirectionControl") {
+    SortDirectionControl(operation: SortByAverageSalaryOperation(), onChange: {})
+        .padding()
+}

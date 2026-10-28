@@ -188,3 +188,29 @@ struct VacancyFormView: View {
         )
     }
 }
+
+#Preview("Нова вакансія") {
+    let viewModel = CatalogViewModel()
+    viewModel.newVacancy()
+    return VacancyFormView(viewModel: viewModel, draft: viewModel.editingDraft ?? Vacancy())
+}
+
+#Preview("Редагування") {
+    let viewModel = CatalogViewModel()
+    viewModel.loadDemoData()
+    viewModel.selectedVacancyIDs = [viewModel.catalog.vacancies[0].id]
+    viewModel.editSelected()
+    return VacancyFormView(viewModel: viewModel, draft: viewModel.editingDraft ?? Vacancy())
+}
+
+#Preview("Помилки під полями") {
+    let viewModel = CatalogViewModel()
+    viewModel.newVacancy()
+    let draft = viewModel.editingDraft ?? Vacancy()
+    draft.company = "ByteForge"
+    draft.title = "Junior iOS Developer"
+    draft.specialization = "Mobile"
+    draft.minSalary = 5000
+    draft.maxSalary = 3000
+    return VacancyFormView(viewModel: viewModel, draft: draft)
+}

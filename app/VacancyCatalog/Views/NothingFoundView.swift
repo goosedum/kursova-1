@@ -23,3 +23,8 @@ struct NothingFoundView: View {
         }
     }
 }
+
+#Preview("NothingFoundView") {
+    NothingFoundView(viewModel: CatalogViewModel())
+        .frame(width: 800, height: 400)
+}

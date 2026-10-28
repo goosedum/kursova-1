@@ -166,3 +166,26 @@ struct VacancyTableView: View {
         return technology.lowercased() == query.lowercased()
     }
 }
+
+#Preview("Усі вакансії") {
+    let viewModel = CatalogViewModel()
+    viewModel.loadDemoData()
+    return VacancyTableView(viewModel: viewModel)
+        .frame(width: 1100, height: 600)
+}
+
+#Preview("Ф.5 — дві групи") {
+    let viewModel = CatalogViewModel()
+    viewModel.loadDemoData()
+    viewModel.run(viewModel.operations[4])
+    return VacancyTableView(viewModel: viewModel)
+        .frame(width: 1100, height: 400)
+}
+
+#Preview("Ф.2 — виділена технологія") {
+    let viewModel = CatalogViewModel()
+    viewModel.loadDemoData()
+    viewModel.findVacancies(withTechnology: "Swift")
+    return VacancyTableView(viewModel: viewModel)
+        .frame(width: 1100, height: 300)
+}

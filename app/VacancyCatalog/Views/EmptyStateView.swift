@@ -39,3 +39,8 @@ struct EmptyStateView: View {
         }
     }
 }
+
+#Preview("EmptyStateView") {
+    EmptyStateView(viewModel: CatalogViewModel())
+        .frame(width: 800, height: 500)
+}

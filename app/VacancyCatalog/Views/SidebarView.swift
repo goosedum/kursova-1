@@ -49,3 +49,14 @@ struct SidebarView: View {
         )
     }
 }
+
+#Preview("SidebarView") {
+    let viewModel = CatalogViewModel()
+    viewModel.loadDemoData()
+    return NavigationSplitView {
+        SidebarView(viewModel: viewModel)
+    } detail: {
+        Text("Вміст вікна")
+    }
+    .frame(width: 700, height: 480)
+}

@@ -232,3 +232,24 @@ struct MainWindowView: View {
         )
     }
 }
+
+#Preview("Демо-дані") {
+    let viewModel = CatalogViewModel()
+    viewModel.loadDemoData()
+    return MainWindowView(viewModel: viewModel)
+        .frame(width: 1440, height: 900)
+}
+
+#Preview("Ф.6 — групи, темна тема") {
+    let viewModel = CatalogViewModel()
+    viewModel.loadDemoData()
+    viewModel.select(viewModel.operations[5])
+    return MainWindowView(viewModel: viewModel)
+        .frame(width: 1440, height: 900)
+        .preferredColorScheme(.dark)
+}
+
+#Preview("Порожній каталог") {
+    MainWindowView(viewModel: CatalogViewModel())
+        .frame(width: 1440, height: 900)
+}

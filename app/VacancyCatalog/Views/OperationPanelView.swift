@@ -81,3 +81,17 @@ struct OperationPanelView: View {
         }
     }
 }
+
+#Preview("Усі шість панелей") {
+    let viewModel = CatalogViewModel()
+    viewModel.loadDemoData()
+    return ScrollView {
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(0..<viewModel.operations.count, id: \.self) { index in
+                OperationPanelView(viewModel: viewModel, operation: viewModel.operations[index])
+                Divider()
+            }
+        }
+    }
+    .frame(width: 1000, height: 800)
+}

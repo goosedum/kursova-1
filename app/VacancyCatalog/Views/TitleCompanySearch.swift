@@ -30,3 +30,10 @@ struct TitleCompanySearch: View {
         }
     }
 }
+
+#Preview("TitleCompanySearch") {
+    let operation = SearchByTitleAndCompanyOperation()
+    operation.titleQuery = "developer"
+    return TitleCompanySearch(operation: operation, onSubmit: {})
+        .padding()
+}

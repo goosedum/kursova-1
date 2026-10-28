@@ -90,3 +90,25 @@ struct VacancyInspectorView: View {
         }
     }
 }
+
+#Preview("Одна вакансія") {
+    let viewModel = CatalogViewModel()
+    viewModel.loadDemoData()
+    viewModel.selectedVacancyIDs = [viewModel.catalog.vacancies[5].id]
+    return VacancyInspectorView(viewModel: viewModel)
+        .frame(width: 300, height: 520)
+}
+
+#Preview("Три вибрані") {
+    let viewModel = CatalogViewModel()
+    viewModel.loadDemoData()
+    viewModel.selectedVacancyIDs = [viewModel.catalog.vacancies[2].id, viewModel.catalog.vacancies[3].id,
+                                    viewModel.catalog.vacancies[4].id]
+    return VacancyInspectorView(viewModel: viewModel)
+        .frame(width: 300, height: 400)
+}
+
+#Preview("Нічого не вибрано") {
+    VacancyInspectorView(viewModel: CatalogViewModel())
+        .frame(width: 300, height: 400)
+}
