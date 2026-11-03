@@ -34,7 +34,7 @@ loop поки try reader >> buffer повертає true
     R --> C : true
     C -> C : loaded.append(Vacancy(copyOf: buffer))
   else помилка в рядку N
-    R --> C : throw VacancyError\n(«Рядок N: …»); читання\nзупиняється (D-23)
+    R --> C : throw VacancyError\n(«Рядок N: …»); читання\nзупиняється, каталог не змінено
   end
   deactivate R
 end
@@ -49,7 +49,7 @@ else VacancyError (з init(url:) або з >>)
   deactivate C
   VM -> VM : errorAlert = error  (do-catch)
   VM --> UI
-  UI --> U : алерт «Не вдалося\nвідкрити файл» (S-15)
+  UI --> U : алерт «Не вдалося\nвідкрити файл»
 end
 deactivate VM
 @enduml

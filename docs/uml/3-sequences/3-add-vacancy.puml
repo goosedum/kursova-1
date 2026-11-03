@@ -21,9 +21,9 @@ loop поки користувач заповнює поля
   U -> F : змінює поле
   F -> D : записати значення
   F -> D : try validate()
-  F --> U : помилка під полем\nабо її немає (S-11)
+  F --> U : помилка під полем\nабо її немає
 end
-U -> F : «Зберегти» (завжди\nактивна, D-31)
+U -> F : «Зберегти» (кнопка\nзавжди активна)
 F -> VM : saveDraft()
 activate VM
 VM -> C : try add(draft)
@@ -33,7 +33,7 @@ alt дані правильні
   D --> C
   C -> C : vacancies.append(draft)
   C --> VM
-  VM -> VM : selectedVacancyIDs\n= [draft.id]\nhasUnsavedChanges\n= true\nisFormPresented\n= false
+  VM -> VM : selectedVacancyIDs = [draft.id]\nhasUnsavedChanges = true\nisFormPresented = false
   VM --> UI
   UI --> U : лист закрито, нова\nвакансія виділена,\n«● Є незбережені зміни»
 else дані з помилкою
@@ -42,7 +42,7 @@ else дані з помилкою
   deactivate C
   VM -> VM : errorAlert = error  (do-catch)
   VM --> F
-  F --> U : алерт «Неправильний\nдіапазон зарплати» (S-16),\nформа лишається відкритою
+  F --> U : алерт «Неправильний\nдіапазон зарплати»,\nформа лишається відкритою
 end
 deactivate VM
 @enduml

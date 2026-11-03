@@ -23,7 +23,7 @@ alt каталог порожній
   OP --> VM : throw VacancyError.emptyCatalog
   VM -> VM : errorAlert = error  (do-catch)
   VM --> UI
-  UI --> U : алерт «Каталог\nпорожній» (S-17)
+  UI --> U : алерт «Каталог\nпорожній»
 else є вакансії
   OP -> MS ** : MergeSorter<Vacancy>()
   OP -> MS : sort(vacancies, by:\nпорівняння averageSalary,\n↓ або ↑ за ascending)
@@ -45,7 +45,7 @@ else є вакансії
   deactivate OP
   VM -> VM : self.result = result
   VM --> UI
-  UI --> U : таблиця,\n«Середня ↓» (S-06)
+  UI --> U : таблиця,\n«Середня ↓»
 end
 deactivate VM
 @enduml
