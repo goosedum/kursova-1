@@ -41,6 +41,10 @@ struct DesignSystemGallery: View {
                         .frame(width: 200, alignment: .leading)
                 }
             }
+            section("TechnologyRow — рядок таблиці") {
+                TechnologyRow(technologies: ["Python", "Django", "PostgreSQL", "Docker", "AWS"])
+                    .frame(width: 240)
+            }
             section("SalaryRangeView") {
                 HStack(alignment: .top, spacing: AppSpacing.xxxl) {
                     SalaryRangeView(vacancy: vacancy)

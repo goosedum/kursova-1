@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// Поле функції 2 (Figma: `Molecule/TechnologyPicker`, екран S-04): під час введення підказує технології каталогу (D-10).
+/// Поле функції 2 (Figma: `Molecule/TechnologyPicker`, екран S-04): під час введення підказує технології каталогу,
+/// що містять уведений текст (D-10, Ф-3).
 struct TechnologyPicker: View {
 
     /// Функція 2.
@@ -21,7 +22,8 @@ struct TechnologyPicker: View {
             TextField("Наприклад, Swift", text: $operation.technology)
                 .frame(width: 180)
                 .textInputSuggestions {
-                    ForEach(technologies, id: \.self) { technology in
+                    // Лише ті, що містять уведений текст (Ф-3)
+                    ForEach(operation.suggestions(from: technologies), id: \.self) { technology in
                         Text(technology)
                             .textInputCompletion(technology)
                     }

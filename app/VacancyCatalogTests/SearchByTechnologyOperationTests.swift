@@ -67,4 +67,37 @@ struct SearchByTechnologyOperationTests {
         operation.technology = "Swift"
         #expect(operation.canExecute)
     }
+
+    @Test("Ф-3: підказки містять уведений текст (без регістру); повний збіг — підказок немає")
+    func suggestionsNarrowWhileTyping() {
+        let operation = SearchByTechnologyOperation()
+        let technologies = ["Docker", "Git", "JavaScript", "Swift", "SwiftUI", "TypeScript"]
+
+        // Порожнє поле — усі технології
+        #expect(operation.suggestions(from: technologies) == technologies)
+        operation.technology = "sw"
+        #expect(operation.suggestions(from: technologies) == ["Swift", "SwiftUI"])
+        operation.technology = "SCRIPT"
+        #expect(operation.suggestions(from: technologies) == ["JavaScript", "TypeScript"])
+        operation.technology = "Rust"
+        #expect(operation.suggestions(from: technologies).isEmpty)
+        // Значення вже введено — список не закриває таблицю
+        operation.technology = " swift "
+        #expect(operation.suggestions(from: technologies).isEmpty)
+    }
+
+    @Test("Ф-4: searchedTechnology — те, за чим виконано пошук, а не поточний текст поля")
+    func searchedTechnologyIsExecutedQuery() throws {
+        let catalog = try TestFiles.demoCatalog()
+        let operation = SearchByTechnologyOperation()
+        #expect(operation.searchedTechnology.isEmpty)
+
+        operation.technology = " SwiftUI "
+        _ = try operation.execute(on: catalog)
+        #expect(operation.searchedTechnology == "SwiftUI")
+
+        // Поле змінили, але ще не виконали — у результаті досі «SwiftUI»
+        operation.technology = "Swift"
+        #expect(operation.searchedTechnology == "SwiftUI")
+    }
 }

@@ -186,6 +186,10 @@ struct CatalogViewModelTests {
         #expect(viewModel.highlightedTechnology == "Swift")
         #expect(viewModel.isNothingFound == false)
 
+        // Поле змінили, але не виконали: виділено те, за чим знайдено показаний результат (Ф-4)
+        technology.technology = "SwiftUI"
+        #expect(viewModel.highlightedTechnology == "Swift")
+
         technology.technology = "Rust"
         viewModel.run(technology)
         #expect(viewModel.isNothingFound)

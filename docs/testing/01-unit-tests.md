@@ -1,6 +1,7 @@
 # Крок 5.1 — Автоматичні тести і покриття коду
 
 > 03.11.2026. Swift Testing (`import Testing`), 148 тестів у 20 наборах, усі проходять.
+> Після кроку 5.4 — 150 тестів (+2 для виправлених Ф-3, Ф-4), усі проходять. Покриття виміряно на кроці 5.1.
 > Тести запускаються всередині програми (як у пісочниці), демо-файли — з `app/VacancyCatalogTests/Fixtures/` (посилання на `samples/`).
 
 ## 1. Як запустити
@@ -24,13 +25,13 @@ xcodebuild -project app/VacancyCatalog.xcodeproj -scheme VacancyCatalog -destina
 | `VacancyFileReaderTests` | оператор `>>`, коментарі, `\r\n`, усі зламані файли з номерами рядків (T-IO-03…08) | 13 |
 | `MergeSorterTests` | порожній масив, один елемент, дублікати, **стабільність**, порівняння з `sorted(by:)` (T-SORT) | 8 |
 | `VacancyCatalogTests` | додавання, вставка, заміна, видалення, підказки, відкриття і збереження, D-23 (T-CAT-17) | 18 |
-| `SearchByTitleAndCompanyOperationTests` … `GroupBySpecializationOperationTests` | функції 1–6 на демо-файлі за еталоном `docs/analysis/03-test-data.md` (T-CAT-01…16) | 6 + 5 + 3 + 3 + 5 + 5 |
+| `SearchByTitleAndCompanyOperationTests` … `GroupBySpecializationOperationTests` | функції 1–6 на демо-файлі за еталоном `docs/analysis/03-test-data.md` (T-CAT-01…16); з кроку 5.4 — підказки ф.2 і технологія виконаного пошуку (Ф-3, Ф-4) | 6 + 7 + 3 + 3 + 5 + 5 |
 | `CatalogOperationTests` | один цикл для 6 різних функцій — поліморфізм (T-OP-01) | 3 |
 | `TextFormatTests` | форми слова «вакансія», суми «$3 000» | 4 |
 | `CatalogViewModelTests` | стан вікна: функції, форма через копію, вибір кількох, файли, «Зберегти зміни?», тексти вікна (T-VM) | 37 |
 | `HelpTopicTests` | розділи довідки | 2 |
 | `DesignSystemGalleryTests` | вітрина дизайн-системи рендериться у світлій і темній темах | 1 |
-| **Разом** | | **148** |
+| **Разом** | | **150** (148 на кроці 5.1 + 2 на 5.4) |
 
 Параметризовані тести (`@Test(arguments:)`) рахуються як один тест, хоча перевіряють кілька випадків.
 

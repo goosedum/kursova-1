@@ -167,13 +167,14 @@ class CatalogViewModel {
         return "Показано \(shown) з " + of + " · " + place
     }
 
-    /// Технологія, яку виділити в таблиці: запит ф.2, коли показано її результат; інакше порожньо.
+    /// Технологія, яку виділити в таблиці: та, за якою виконано ф.2, коли показано її результат; інакше порожньо.
+    /// Не текст поля: поки його змінюють, таблиця ще показує старий результат (Ф-4).
     var highlightedTechnology: String {
         if result == nil {
             return ""
         }
         if let search = selectedOperation as? SearchByTechnologyOperation {
-            return search.technology
+            return search.searchedTechnology
         }
         return ""
     }

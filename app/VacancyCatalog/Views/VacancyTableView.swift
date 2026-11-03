@@ -19,13 +19,14 @@ struct VacancyTableView: View {
             TableColumn("Компанія") { vacancy in
                 Text(vacancy.company)
             }
-            .width(min: 80, ideal: 100)
+            .width(min: 70, ideal: 100)
 
             TableColumn("Посада") { vacancy in
                 Text(vacancy.title)
                     .fontWeight(.semibold)
             }
-            .width(min: 140, ideal: 190)
+            // Посада може обрізатися «…» (повна — у панелі деталей); зарплата й технології — ні (Ф-1)
+            .width(min: 100, ideal: 190)
 
             TableColumn("Спеціалізація") { vacancy in
                 Text(vacancy.specialization)
@@ -46,7 +47,8 @@ struct VacancyTableView: View {
             TableColumn("Зарплата") { vacancy in
                 SalaryRangeView(vacancy: vacancy)
             }
-            .width(min: 100, ideal: 115)
+            // min — щоб «$5 000 – $8 000» вміщувалася й тоді, коли відкрито панель деталей (Ф-1)
+            .width(min: 125, ideal: 130)
 
             TableColumn(viewModel.averageColumnTitle) { vacancy in
                 Text(TextFormat.money(vacancy.averageSalary))
@@ -56,14 +58,10 @@ struct VacancyTableView: View {
             .width(min: 60, ideal: 70)
 
             TableColumn("Технології") { vacancy in
-                // В один рядок; що не вміщується — обрізається краєм колонки (усі — у панелі деталей)
-                HStack(spacing: AppSpacing.xs) {
-                    ForEach(vacancy.technologies, id: \.self) { technology in
-                        TechnologyChip(name: technology, isHighlighted: isHighlighted(technology))
-                    }
-                }
+                // В один рядок: цілі чипи, що вміщуються, і «+N» (D-40); усі — у панелі деталей
+                TechnologyRow(technologies: vacancy.technologies, highlighted: viewModel.highlightedTechnology)
             }
-            .width(min: 120, ideal: 220)
+            .width(min: 100, ideal: 220)
         } rows: {
             ForEach(viewModel.displayedGroups) { group in
                 if group.title.isEmpty {
@@ -155,15 +153,6 @@ struct VacancyTableView: View {
             }
         }
         return found
-    }
-
-    /// Чи виділити чип: технологія збігається із запитом ф.2 (без урахування регістру).
-    private func isHighlighted(_ technology: String) -> Bool {
-        let query = viewModel.highlightedTechnology.trimmingCharacters(in: .whitespaces)
-        if query.isEmpty {
-            return false
-        }
-        return technology.lowercased() == query.lowercased()
     }
 }
 

@@ -28,10 +28,12 @@ package "Logic" {
   }
   class SearchByTechnologyOperation {
     + technology : String
+    + searchedTechnology : String {readOnly}
     + /canExecute : Bool {override}
     --
     + init()
     + execute(on:) throws : OperationResult
+    + suggestions(from:) : [String]
   }
   class FilterByLevelAndFormatOperation {
     + level : ExperienceLevel
