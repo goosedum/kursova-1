@@ -53,6 +53,14 @@ struct SearchByTitleAndCompanyOperationTests {
         #expect(result.summary == "Нічого не знайдено")
     }
 
+    @Test("Обидва поля порожні — порожнє поле не обмежує пошук: усі 28 вакансій")
+    func bothFieldsEmptyFindsAll() throws {
+        let catalog = try TestFiles.demoCatalog()
+        let result = try SearchByTitleAndCompanyOperation().execute(on: catalog)
+        #expect(result.vacancyCount == 28)
+        #expect(result.title == "Усі вакансії")
+    }
+
     @Test("T-CAT-13: порожній каталог → emptyCatalog (D-38)")
     func emptyCatalogThrows() {
         let operation = SearchByTitleAndCompanyOperation()

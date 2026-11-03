@@ -104,6 +104,15 @@ struct VacancyFileReaderTests {
         }
     }
 
+    @Test("T-IO-05: «xyz» замість максимальної зарплати → invalidNumber")
+    func maxSalaryNotNumberThrows() throws {
+        let url = try TestFiles.temporaryFile(containing:
+            "# коментар\nByteForge;Junior iOS Developer;Mobile;Junior;800;xyz;Office;Swift\n")
+        #expect(throws: VacancyError.invalidNumber(line: 2, field: "максимальна зарплата", value: "xyz")) {
+            try TestFiles.readVacancies(from: url)
+        }
+    }
+
     @Test("T-IO-06: невідомий рівень «Pro» у рядку 7 → unknownValue")
     func unknownLevelThrows() throws {
         let url = try TestFiles.fixture("broken-level")

@@ -31,6 +31,7 @@ struct CatalogViewModelTests {
         #expect(viewModel.result == nil)
         #expect(viewModel.hasUnsavedChanges == false)
         #expect(viewModel.errorAlert == nil)
+        #expect(viewModel.isNothingFound == false)
     }
 
     @Test("run показує результат функції, showAll — знову весь каталог")
@@ -550,6 +551,38 @@ struct CatalogViewModelTests {
         viewModel.discardChangesAndContinue()
         #expect(viewModel.catalog.vacancies.count == 28)
         #expect(viewModel.catalogName == "Демо-дані")
+    }
+
+    @Test("«Зберегти як…» (⇧⌘S) показує вікно вибору місця")
+    func requestSaveAsShowsPanel() throws {
+        let viewModel = try makeViewModel()
+        viewModel.requestSaveAs()
+        #expect(viewModel.isSavePanelPresented)
+    }
+
+    @Test("«Зберегти» у питанні «Зберегти зміни?» не вдалося — алерт, відкладена дія скасована, каталог цілий")
+    func failedSaveInUnsavedChangesQuestion() throws {
+        let viewModel = try makeChangedViewModel()
+        let folder = FileManager.default.temporaryDirectory.appending(path: "no-such-folder-\(UUID().uuidString)")
+        viewModel.currentFileURL = folder.appending(path: "catalog.txt")
+
+        viewModel.requestNewCatalog()
+        viewModel.saveChangesAndContinue()
+        #expect(viewModel.errorAlert == VacancyError.fileWriteFailed(path: "catalog.txt"))
+        #expect(viewModel.pendingAction == nil)
+        #expect(viewModel.catalog.vacancies.count == 27)
+        #expect(viewModel.hasUnsavedChanges)
+    }
+
+    @Test("Виділення технології — лише для результату ф.2; «Зберегти» форми без чернетки нічого не робить")
+    func highlightOnlyForTechnologySearch() throws {
+        let viewModel = try makeViewModel()
+        viewModel.run(viewModel.operations[2])
+        #expect(viewModel.highlightedTechnology.isEmpty)
+
+        viewModel.saveDraft()
+        #expect(viewModel.catalog.vacancies.count == 28)
+        #expect(viewModel.hasUnsavedChanges == false)
     }
 
     @Test("Помилка запису → алерт fileWriteFailed, ознака змін лишається")

@@ -205,6 +205,24 @@ struct VacancyTests {
         }
     }
 
+    @Test("Технологія довша за 30 символів → fieldTooLong(«Технологія»)")
+    func tooLongTechnologyThrows() {
+        let vacancy = makeVacancy()
+        vacancy.technologies = ["Swift", String(repeating: "x", count: 31)]
+        #expect(throws: VacancyError.fieldTooLong(name: "Технологія", limit: 30)) {
+            try vacancy.validate()
+        }
+    }
+
+    @Test("Символ «;» або «,» усередині технології → forbiddenCharacter", arguments: [";", ","])
+    func forbiddenCharacterInTechnologyThrows(character: String) {
+        let vacancy = makeVacancy()
+        vacancy.technologies = ["Swift" + character + "UI"]
+        #expect(throws: VacancyError.forbiddenCharacter(name: "Технологія", character: character)) {
+            try vacancy.validateTechnologies()
+        }
+    }
+
     @Test("Перевірка окремих полів: кожен метод бачить лише своє поле (для помилок під полями форми)")
     func separateFieldChecks() throws {
         let vacancy = makeVacancy()

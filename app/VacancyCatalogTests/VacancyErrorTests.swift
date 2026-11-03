@@ -36,6 +36,7 @@ struct VacancyErrorTests {
                 == "Не вдалося відкрити файл")
         #expect(VacancyError.fileWriteFailed(path: "a.txt").alertTitle == "Не вдалося зберегти файл")
         #expect(VacancyError.emptyField(name: "Компанія").alertTitle == "Неправильні дані вакансії")
+        #expect(VacancyError.salaryOutOfRange(value: -1).alertTitle == "Неправильна зарплата")
         // Помилка відкриття файлу нагадує, що каталог не змінено (S-15, D-23); інші — ні
         let fileError = VacancyError.invalidNumber(line: 6, field: "мінімальна зарплата", value: "abc")
         #expect(fileError.alertMessage.hasPrefix("Рядок 6: «abc» не є числом (мінімальна зарплата). "))
