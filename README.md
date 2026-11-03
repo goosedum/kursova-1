@@ -1,4 +1,4 @@
-<img src="app/VacancyCatalog/Resources/Assets.xcassets/AppIcon.appiconset/icon-256.png" width="96" align="right" alt="Іконка програми">
+<img src="app/VacancyCatalog/Resources/Assets.xcassets/AppIcon.appiconset/icon-256.png" width="74" align="right" alt="Іконка програми">
 
 # Каталог вакансій для ІТ-спеціалістів
 
