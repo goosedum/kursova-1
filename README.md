@@ -14,10 +14,6 @@
 
 ![Головне вікно: усі вакансії каталогу](docs/report/figures/protocol/M-14.png)
 
-| Групування за спеціалізацією (функція 6) | Темна тема |
-|---|---|
-| ![Функція 6](docs/report/figures/protocol/M-06.png) | ![Темна тема](docs/report/figures/protocol/M-16.png) |
-
 ## Зміст
 
 1. [Можливості](#можливості)
