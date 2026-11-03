@@ -21,9 +21,9 @@ endwhile (ні)
 stop
 
 floating note right
-  Для ф.4 (D-11):
-  ↓ isOrderedBefore = { $0.averageSalary > $1.averageSalary }
-  ↑ isOrderedBefore = { $0.averageSalary < $1.averageSalary }
+  Для функції 4:
+  ↓ isOrderedBefore = { first, second in first.averageSalary > second.averageSalary }
+  ↑ isOrderedBefore = { first, second in first.averageSalary < second.averageSalary }
   При рівності першим іде елемент
   лівої половини — сортування стабільне.
 end note
